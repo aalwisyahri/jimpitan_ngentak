@@ -158,21 +158,6 @@
   .chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px}
   .chip-green{background:var(--green-100);color:var(--green-700)}
 
-  /* HAPUS */
-  .btn-hapus-semua{width:100%;padding:10px;border:1.5px solid var(--red-200);border-radius:var(--radius);background:transparent;font-family:var(--font);font-size:13px;font-weight:600;color:var(--red-600);cursor:pointer;margin-bottom:16px;transition:all .15s}
-  .btn-hapus-semua:hover{background:var(--red-50)}
-  .riwayat-delete{background:transparent;border:none;cursor:pointer;font-size:14px;padding:4px 8px;border-radius:6px;color:var(--muted);transition:all .15s;flex-shrink:0}
-  .riwayat-delete:hover{background:var(--red-50);color:var(--red-600)}
-  .confirm-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
-  .confirm-box{background:var(--surface);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:360px;text-align:center}
-  .confirm-box h3{font-size:17px;font-weight:700;margin-bottom:8px;color:var(--slate-900)}
-  .confirm-box p{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6}
-  .confirm-actions{display:flex;gap:8px}
-  .confirm-cancel{flex:1;padding:10px;border:1.5px solid var(--slate-200);border-radius:10px;background:transparent;font-family:var(--font);font-size:14px;font-weight:600;color:var(--slate-600);cursor:pointer}
-  .confirm-cancel:hover{background:var(--slate-50)}
-  .confirm-ok{flex:1;padding:10px;border:none;border-radius:10px;background:var(--red-600);font-family:var(--font);font-size:14px;font-weight:600;color:#fff;cursor:pointer}
-  .confirm-ok:hover{background:var(--red-800)}
-
   @media(max-width:480px){
     .stats-grid{grid-template-columns:1fr 1fr}
     .stat-card:last-child{grid-column:span 2}
@@ -229,10 +214,6 @@
   <div class="page-header" style="margin-top:20px">
     <h2 id="pageTitle">Jimpitan Senin</h2>
     <p id="pageSubtitle">Loading...</p>
-    <div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap">
-      <span id="syncStatus" style="font-size:12px;font-weight:600;color:var(--muted);transition:color .3s">○ Mode lokal</span>
-      <span id="finalBadge" style="display:none;font-size:11px;font-weight:700;background:var(--green-100);color:var(--green-700);padding:2px 10px;border-radius:99px">✓ Final</span>
-    </div>
   </div>
 
   <div class="stats-grid">
@@ -271,7 +252,7 @@
 
   <div class="action-bar">
     <button class="btn btn-primary" id="btnSimpan" onclick="simpanData()">
-      <span>💾</span> Tandai Selesai
+      <span>💾</span> Simpan Minggu Ini
     </button>
     <button class="btn btn-outline" onclick="confirmReset()">↺</button>
   </div>
@@ -297,22 +278,7 @@
     </div>
   </div>
 
-  <button class="btn-hapus-semua" id="btnHapusSemua" onclick="hapusSemua()" style="display:none">🗑 Hapus Semua Riwayat</button>
-
   <div id="riwayatContent"><div class="loading"><div class="spinner"></div>Memuat riwayat...</div></div>
-</div>
-
-<!-- CONFIRM MODAL -->
-<div class="confirm-modal" id="confirmModal" style="display:none">
-  <div class="confirm-box">
-    <div style="font-size:32px;margin-bottom:10px" id="confirmIcon">🗑</div>
-    <h3 id="confirmTitle">Hapus Riwayat?</h3>
-    <p id="confirmMsg">Data yang dihapus tidak bisa dikembalikan.</p>
-    <div class="confirm-actions">
-      <button class="confirm-cancel" onclick="closeConfirm()">Batal</button>
-      <button class="confirm-ok" id="confirmOkBtn">Hapus</button>
-    </div>
-  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -331,17 +297,17 @@ const WARGA = [
   "Mbah Yusuf", "Mas Pur Pur Mbak Darni","Mas Gejen","Mbah Timin"
 ];
 
-let SUPABASE_URL = '';
-let SUPABASE_KEY = '';
-let DUSUN_NAME = 'Dusun';
+let SUPABASE_URL = 'https://auhnsoghkczxnojqvaxu.supabase.co';
+let SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1aG5zb2doa2N6eG5vanF2YXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjc0NzAsImV4cCI6MjA5MTY0MzQ3MH0.hBAtmnGZxwtlTe9oR_BZK9pXlToKx7Voz6VO150b9SY';
+let DUSUN_NAME = 'Dusun Ngentak';
 let currentWeekData = {}; // { wargaIdx: { paid: bool, reason: string } }
 let currentWeekKey = '';
 
 function getConfig() {
   const c = JSON.parse(localStorage.getItem('jimpitan_config') || '{}');
-  SUPABASE_URL = c.url || 'https://auhnsoghkczxnojqvaxu.supabase.co';
-  SUPABASE_KEY = c.key || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1aG5zb2doa2N6eG5vanF2YXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjc0NzAsImV4cCI6MjA5MTY0MzQ3MH0.hBAtmnGZxwtlTe9oR_BZK9pXlToKx7Voz6VO150b9SY';
-  DUSUN_NAME = c.dusun || 'Dusun Ngentak';
+  SUPABASE_URL = c.url || '';
+  SUPABASE_KEY = c.key || '';
+  DUSUN_NAME = c.dusun || 'Dusun';
 }
 
 function saveConfig() {
@@ -447,71 +413,15 @@ function getInitials(name) {
 }
 
 // ============================================================
-// LOCAL DRAFT — fallback jika offline
+// LOCAL DRAFT (auto-save per tab close)
 // ============================================================
-function saveDraftLocal() {
+function saveDraft() {
   localStorage.setItem('jimpitan_draft_' + currentWeekKey, JSON.stringify(currentWeekData));
 }
 
-function loadDraftLocal(weekKey) {
+function loadDraft(weekKey) {
   const d = localStorage.getItem('jimpitan_draft_' + weekKey);
   return d ? JSON.parse(d) : {};
-}
-
-// ============================================================
-// AUTO-SAVE KE SUPABASE (dipanggil setiap centang/alasan)
-// ============================================================
-let autoSaveTimer = null;
-let isSyncing = false;
-
-function scheduleAutoSave() {
-  saveDraftLocal();
-  if (!SUPABASE_URL || !SUPABASE_KEY) return;
-  clearTimeout(autoSaveTimer);
-  autoSaveTimer = setTimeout(() => doAutoSave(), 800);
-}
-
-async function doAutoSave() {
-  if (isSyncing) return;
-  isSyncing = true;
-  setSyncStatus('syncing');
-  try {
-    const paid = WARGA.filter((_, i) => currentWeekData[i] && currentWeekData[i].paid).length;
-    const details = WARGA.map((nama, i) => ({
-      nama,
-      paid: !!(currentWeekData[i] && currentWeekData[i].paid),
-      reason: (currentWeekData[i] && currentWeekData[i].reason) || ''
-    }));
-    await upsertMinggu({
-      week_key: currentWeekKey,
-      week_label: formatDateID(getMondayOfWeek()),
-      total_paid: paid,
-      total_amount: paid * 1000,
-      details,
-      is_final: false,
-      saved_at: new Date().toISOString()
-    });
-    setSyncStatus('saved');
-  } catch (e) {
-    setSyncStatus('error');
-    console.warn('Auto-save gagal:', e.message);
-  } finally {
-    isSyncing = false;
-  }
-}
-
-function setSyncStatus(status) {
-  const el = document.getElementById('syncStatus');
-  if (!el) return;
-  const map = {
-    syncing: { text: '⟳ Menyinkron...', color: 'var(--amber-600)' },
-    saved:   { text: '✓ Tersinkron',     color: 'var(--green-600)' },
-    error:   { text: '⚠ Gagal sinkron',  color: 'var(--red-600)'   },
-    offline: { text: '○ Mode lokal',     color: 'var(--muted)'     }
-  };
-  const s = map[status] || map.offline;
-  el.textContent = s.text;
-  el.style.color = s.color;
 }
 
 // ============================================================
@@ -606,14 +516,14 @@ function onCheckChange(i, checked) {
     const ta = document.querySelector(`#card-${i} textarea`);
     if (ta) ta.value = '';
   }
-  scheduleAutoSave();
+  saveDraft();
 }
 
 function onReasonChange(i, val) {
   if (!currentWeekData[i]) currentWeekData[i] = {};
   currentWeekData[i].reason = val;
   updateCard(i);
-  scheduleAutoSave();
+  saveDraft();
 }
 
 // ============================================================
@@ -623,6 +533,7 @@ async function simpanData() {
   const btn = document.getElementById('btnSimpan');
   btn.disabled = true;
   btn.innerHTML = '<span>⏳</span> Menyimpan...';
+
   try {
     const paid = WARGA.filter((_, i) => currentWeekData[i] && currentWeekData[i].paid).length;
     const details = WARGA.map((nama, i) => ({
@@ -630,38 +541,35 @@ async function simpanData() {
       paid: !!(currentWeekData[i] && currentWeekData[i].paid),
       reason: (currentWeekData[i] && currentWeekData[i].reason) || ''
     }));
-    await upsertMinggu({
+
+    const payload = {
       week_key: currentWeekKey,
       week_label: formatDateID(getMondayOfWeek()),
       total_paid: paid,
       total_amount: paid * 1000,
-      details,
-      is_final: true,
+      details: details,
       saved_at: new Date().toISOString()
-    });
+    };
+
+    await upsertMinggu(payload);
     localStorage.removeItem('jimpitan_draft_' + currentWeekKey);
-    setSyncStatus('saved');
-    showToast('✓ Data final tersimpan!');
+    showToast('✓ Data berhasil disimpan!');
   } catch (e) {
     showToast('❌ Gagal: ' + e.message);
     console.error(e);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<span>💾</span> Tandai Selesai';
+    btn.innerHTML = '<span>💾</span> Simpan Minggu Ini';
   }
 }
 
 function confirmReset() {
-  showConfirm('↺', 'Reset Minggu Ini?',
-    'Semua centang akan dikosongkan. Data di database juga akan diperbarui.',
-    async () => {
-      currentWeekData = {};
-      scheduleAutoSave();
-      renderWargaGrid();
-      renderStats();
-      showToast('Data direset');
-    }
-  );
+  if (!confirm('Reset semua checklist minggu ini?')) return;
+  currentWeekData = {};
+  saveDraft();
+  renderWargaGrid();
+  renderStats();
+  showToast('Data direset');
 }
 
 // ============================================================
@@ -677,14 +585,12 @@ async function loadRiwayat() {
       el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Belum ada riwayat tersimpan.</p></div>';
       document.getElementById('akumulasiValue').textContent = 'Rp0';
       document.getElementById('akumulasiSub').textContent = '0 minggu tercatat';
-      document.getElementById('btnHapusSemua').style.display = 'none';
       return;
     }
 
     const totalAkum = rows.reduce((s, r) => s + (r.total_amount || 0), 0);
     document.getElementById('akumulasiValue').textContent = formatRupiah(totalAkum);
     document.getElementById('akumulasiSub').textContent = rows.length + ' minggu tercatat';
-    document.getElementById('btnHapusSemua').style.display = 'block';
 
     el.innerHTML = '<div class="riwayat-list">' + rows.map((r, idx) => {
       const details = Array.isArray(r.details) ? r.details : [];
@@ -692,14 +598,12 @@ async function loadRiwayat() {
       return `
       <div class="riwayat-card" id="rw-${idx}">
         <div class="riwayat-header" onclick="toggleRiwayat(${idx})">
-          <div style="flex:1;min-width:0">
-            <div class="riwayat-date">📅 ${r.week_label || r.week_key}${r.is_final ? ' <span style=\"font-size:10px;background:#dcfce7;color:#166534;padding:1px 7px;border-radius:99px;font-weight:700\">Final</span>' : ' <span style=\"font-size:10px;background:#fef3c7;color:#d97706;padding:1px 7px;border-radius:99px;font-weight:700\">Draft</span>'}</div>
+          <div>
+            <div class="riwayat-date">📅 ${r.week_label || r.week_key}</div>
             <div class="riwayat-meta">${r.total_paid}/28 bayar · ${belum.length} belum</div>
           </div>
-          <div style="display:flex;align-items:center;gap:8px">
+          <div style="display:flex;align-items:center;gap:12px">
             <div class="riwayat-total">${formatRupiah(r.total_amount || 0)}</div>
-            <button class="riwayat-delete" title="Edit minggu ini" onclick="event.stopPropagation();editRiwayat('${r.week_key}')" style="color:var(--slate-500)">✏️</button>
-            <button class="riwayat-delete" title="Hapus minggu ini" onclick="event.stopPropagation();hapusMinggu('${r.week_key}','${r.week_label||r.week_key}')">🗑</button>
             <div class="riwayat-chevron">▼</div>
           </div>
         </div>
@@ -724,89 +628,6 @@ async function loadRiwayat() {
 function toggleRiwayat(idx) {
   const card = document.getElementById('rw-' + idx);
   card.classList.toggle('open');
-}
-
-// ============================================================
-// HAPUS RIWAYAT
-// ============================================================
-let confirmCallback = null;
-
-function showConfirm(icon, title, msg, onOk) {
-  document.getElementById('confirmIcon').textContent = icon;
-  document.getElementById('confirmTitle').textContent = title;
-  document.getElementById('confirmMsg').textContent = msg;
-  document.getElementById('confirmOkBtn').onclick = () => { closeConfirm(); onOk(); };
-  document.getElementById('confirmModal').style.display = 'flex';
-}
-
-function closeConfirm() {
-  document.getElementById('confirmModal').style.display = 'none';
-}
-
-async function hapusMinggu(weekKey, weekLabel) {
-  showConfirm('🗑', 'Hapus Riwayat Ini?',
-    `Data minggu "${weekLabel}" akan dihapus permanen dan tidak bisa dikembalikan.`,
-    async () => {
-      try {
-        await sbFetch(`jimpitan_minggu?week_key=eq.${weekKey}`, { method: 'DELETE', prefer: '' });
-        localStorage.removeItem('jimpitan_draft_' + weekKey);
-        showToast('✓ Riwayat berhasil dihapus');
-        loadRiwayat();
-      } catch (e) {
-        showToast('❌ Gagal hapus: ' + e.message);
-      }
-    }
-  );
-}
-
-async function editRiwayat(weekKey) {
-  // Load data minggu tersebut ke tampilan Minggu Ini
-  showToast('⏳ Memuat data minggu tersebut...');
-  try {
-    const row = await getMingguByKey(weekKey);
-    if (!row || !row.details) { showToast('❌ Data tidak ditemukan'); return; }
-
-    // Override currentWeekKey ke minggu yg dipilih
-    currentWeekKey = weekKey;
-    const dbData = {};
-    row.details.forEach((d, i) => { dbData[i] = { paid: d.paid, reason: d.reason || '' }; });
-    currentWeekData = dbData;
-
-    // Update header label
-    document.getElementById('pageTitle').textContent = 'Edit: ' + (row.week_label || weekKey);
-    document.getElementById('pageSubtitle').textContent = 'Mode edit riwayat · Centang ulang lalu klik Tandai Selesai';
-    if (row.is_final) document.getElementById('finalBadge').style.display = 'inline-flex';
-
-    renderWargaGrid();
-    renderStats();
-
-    // Switch ke tab Minggu Ini
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('view-minggu-ini').classList.add('active');
-    document.querySelectorAll('.tab-btn')[0].classList.add('active');
-    window.scrollTo(0, 0);
-    showToast('✏️ Mode edit: ' + (row.week_label || weekKey));
-  } catch (e) {
-    showToast('❌ Gagal: ' + e.message);
-  }
-}
-
-async function hapusSemua() {
-  showConfirm('⚠️', 'Hapus Semua Riwayat?',
-    'Seluruh data jimpitan dari semua minggu akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.',
-    async () => {
-      try {
-        await sbFetch('jimpitan_minggu?id=gt.0', { method: 'DELETE', prefer: '' });
-        // Hapus semua draft lokal
-        Object.keys(localStorage).filter(k => k.startsWith('jimpitan_draft_')).forEach(k => localStorage.removeItem(k));
-        showToast('✓ Semua riwayat berhasil dihapus');
-        loadRiwayat();
-      } catch (e) {
-        showToast('❌ Gagal hapus: ' + e.message);
-      }
-    }
-  );
 }
 
 // ============================================================
@@ -843,12 +664,11 @@ async function init() {
   document.getElementById('pageTitle').textContent = 'Jimpitan Senin, ' + monday.getDate() + ' ' + label.split(' ')[2] + ' ' + monday.getFullYear();
   document.getElementById('pageSubtitle').textContent = 'Periode: ' + label + ' · Nilai Rp1.000/warga';
 
-  // Load draft lokal dulu (offline fallback)
-  currentWeekData = loadDraftLocal(currentWeekKey);
+  // Load draft first
+  currentWeekData = loadDraft(currentWeekKey);
 
-  // Load dari DB — selalu prioritaskan DB (sumber kebenaran)
+  // Try load from DB
   if (SUPABASE_URL && SUPABASE_KEY) {
-    setSyncStatus('syncing');
     try {
       await ensureTable();
       const row = await getMingguByKey(currentWeekKey);
@@ -857,21 +677,14 @@ async function init() {
         row.details.forEach((d, i) => {
           dbData[i] = { paid: d.paid, reason: d.reason || '' };
         });
+        // Merge: DB takes priority over draft
         currentWeekData = dbData;
-        saveDraftLocal();
-        // Tandai is_final di UI
-        if (row.is_final) {
-          document.getElementById('finalBadge').style.display = 'inline-flex';
-        }
+        saveDraft(currentWeekKey);
       }
-      setSyncStatus('saved');
     } catch (e) {
       console.warn('DB load error:', e.message);
-      setSyncStatus('error');
       showToast('⚠️ Gagal konek DB, menggunakan data lokal');
     }
-  } else {
-    setSyncStatus('offline');
   }
 
   renderWargaGrid();
