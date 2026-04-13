@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jimpitan Dusun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Lora:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-50:#f0fdf4;--green-100:#dcfce7;--green-200:#bbf7d0;--green-500:#22c55e;--green-600:#16a34a;--green-700:#15803d;--green-800:#166534;
+    --red-50:#fff1f2;--red-100:#ffe4e6;--red-200:#fecdd3;--red-500:#ef4444;--red-600:#dc2626;--red-800:#991b1b;
+    --amber-50:#fffbeb;--amber-100:#fef3c7;--amber-500:#f59e0b;--amber-600:#d97706;
+    --slate-50:#f8fafc;--slate-100:#f1f5f9;--slate-200:#e2e8f0;--slate-300:#cbd5e1;--slate-400:#94a3b8;--slate-500:#64748b;--slate-600:#475569;--slate-700:#334155;--slate-800:#1e293b;--slate-900:#0f172a;
+    --bg:#fafaf8;--surface:#ffffff;--text:#1a1a1a;--muted:#64748b;
+    --font:'Plus Jakarta Sans',sans-serif;
+    --radius:12px;--radius-lg:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px}
+
+  /* NAV */
+  nav{background:var(--surface);border-bottom:1px solid var(--slate-200);position:sticky;top:0;z-index:100;padding:0 16px}
+  .nav-inner{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+  .nav-brand{display:flex;align-items:center;gap:10px}
+  .nav-logo{width:32px;height:32px;background:var(--green-600);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px}
+  .nav-title{font-size:15px;font-weight:700;color:var(--slate-800)}
+  .nav-title span{font-weight:400;color:var(--muted);font-size:13px;display:block;margin-top:-2px}
+  .nav-tabs{display:flex;gap:4px}
+  .tab-btn{padding:6px 14px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-radius:8px;transition:all .15s}
+  .tab-btn.active{background:var(--green-100);color:var(--green-700)}
+  .tab-btn:hover:not(.active){background:var(--slate-100)}
+
+  /* VIEWS */
+  .view{display:none;max-width:720px;margin:0 auto;padding:20px 16px}
+  .view.active{display:block}
+
+  /* PAGE HEADER */
+  .page-header{margin-bottom:20px}
+  .page-header h2{font-size:22px;font-weight:700;color:var(--slate-900)}
+  .page-header p{font-size:13px;color:var(--muted);margin-top:3px}
+
+  /* STATS GRID */
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+  .stat-card{background:var(--surface);border:1px solid var(--slate-200);border-radius:var(--radius);padding:14px}
+  .stat-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .stat-value{font-size:22px;font-weight:700;margin-top:4px;color:var(--slate-900)}
+  .stat-card.green .stat-value{color:var(--green-600)}
+  .stat-card.red .stat-value{color:var(--red-600)}
+
+  /* PROGRESS */
+  .progress-wrap{background:var(--surface);border:1px solid var(--slate-200);border-radius:var(--radius);padding:14px;margin-bottom:20px}
+  .progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .progress-label{font-size:13px;font-weight:600;color:var(--slate-700)}
+  .progress-pct{font-size:13px;font-weight:700;color:var(--green-600)}
+  .progress-bar{height:10px;background:var(--slate-100);border-radius:99px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--green-500),var(--green-600));border-radius:99px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+  /* SECTION */
+  .section-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+
+  /* WARGA CARDS */
+  .warga-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+  .warga-card{background:var(--surface);border:1.5px solid var(--slate-200);border-radius:var(--radius);overflow:hidden;transition:border-color .2s,box-shadow .2s}
+  .warga-card.paid{border-color:var(--green-300,#86efac);background:var(--green-50)}
+  .warga-card.unpaid-filled{border-color:var(--red-200);background:var(--red-50)}
+  .card-main{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}
+  .warga-avatar{width:36px;height:36px;border-radius:50%;background:var(--slate-100);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--slate-500);flex-shrink:0;transition:all .2s}
+  .warga-card.paid .warga-avatar{background:var(--green-100);color:var(--green-700)}
+  .warga-card.unpaid-filled .warga-avatar{background:var(--red-100);color:var(--red-700)}
+  .warga-info{flex:1;min-width:0}
+  .warga-name{font-size:14px;font-weight:600;color:var(--slate-800)}
+  .warga-status{font-size:11px;margin-top:1px;color:var(--muted)}
+  .warga-card.paid .warga-status{color:var(--green-600);font-weight:500}
+  .warga-card.unpaid-filled .warga-status{color:var(--red-600)}
+  .check-wrap{flex-shrink:0}
+  .check-wrap input[type=checkbox]{width:20px;height:20px;accent-color:var(--green-600);cursor:pointer}
+  .reason-wrap{padding:0 14px 12px;border-top:1px solid var(--slate-100)}
+  .warga-card.paid .reason-wrap{display:none}
+  .reason-label{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;display:block;padding-top:10px}
+  .reason-input{width:100%;padding:8px 10px;border:1px solid var(--slate-200);border-radius:8px;font-family:var(--font);font-size:13px;color:var(--slate-700);background:var(--surface);resize:none;outline:none;transition:border-color .15s}
+  .reason-input:focus{border-color:var(--slate-400)}
+  .reason-input::placeholder{color:var(--slate-300)}
+
+  /* BELUM SECTION */
+  .belum-box{background:var(--red-50);border:1px solid var(--red-200);border-radius:var(--radius);padding:14px;margin-bottom:20px}
+  .belum-box h3{font-size:13px;font-weight:700;color:var(--red-800);margin-bottom:10px}
+  .belum-item{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
+  .belum-dot{width:6px;height:6px;border-radius:50%;background:var(--red-400);flex-shrink:0;margin-top:6px}
+  .belum-item-name{font-size:13px;font-weight:600;color:var(--red-800)}
+  .belum-item-alasan{font-size:12px;color:var(--red-600);font-style:italic}
+
+  /* ACTIONS */
+  .action-bar{display:flex;gap:8px;margin-bottom:20px}
+  .btn{padding:10px 20px;border:none;border-radius:var(--radius);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+  .btn:active{transform:scale(.97)}
+  .btn-primary{background:var(--green-600);color:#fff;flex:1}
+  .btn-primary:hover{background:var(--green-700)}
+  .btn-primary:disabled{background:var(--slate-300);cursor:not-allowed;transform:none}
+  .btn-outline{background:var(--surface);border:1.5px solid var(--slate-200);color:var(--slate-600)}
+  .btn-outline:hover{background:var(--slate-50)}
+
+  /* RIWAYAT */
+  .riwayat-list{display:flex;flex-direction:column;gap:12px}
+  .riwayat-card{background:var(--surface);border:1px solid var(--slate-200);border-radius:var(--radius-lg);overflow:hidden}
+  .riwayat-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+  .riwayat-header:hover{background:var(--slate-50)}
+  .riwayat-date{font-size:14px;font-weight:700;color:var(--slate-800)}
+  .riwayat-meta{font-size:12px;color:var(--muted);margin-top:2px}
+  .riwayat-total{font-size:16px;font-weight:700;color:var(--green-600)}
+  .riwayat-chevron{font-size:12px;color:var(--muted);transition:transform .2s}
+  .riwayat-card.open .riwayat-chevron{transform:rotate(180deg)}
+  .riwayat-body{display:none;padding:0 16px 14px;border-top:1px solid var(--slate-100)}
+  .riwayat-card.open .riwayat-body{display:block}
+  .riwayat-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--slate-100);font-size:13px}
+  .riwayat-row:last-child{border-bottom:none}
+  .riwayat-row-name{color:var(--slate-700);font-weight:500}
+  .riwayat-row-status{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px}
+  .status-paid{background:var(--green-100);color:var(--green-700)}
+  .status-unpaid{background:var(--red-100);color:var(--red-700)}
+  .riwayat-alasan{font-size:11px;color:var(--muted);font-style:italic}
+
+  /* AKUMULASI */
+  .akumulasi-bar{background:var(--surface);border:1px solid var(--slate-200);border-radius:var(--radius-lg);padding:16px;margin-bottom:20px;display:flex;align-items:center;gap:16px}
+  .akumulasi-icon{width:44px;height:44px;background:var(--green-100);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+  .akumulasi-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .akumulasi-value{font-size:24px;font-weight:700;color:var(--green-700)}
+  .akumulasi-sub{font-size:12px;color:var(--muted);margin-top:1px}
+
+  /* SETUP */
+  .setup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+  .setup-box{background:var(--surface);border-radius:var(--radius-lg);padding:28px;width:100%;max-width:420px}
+  .setup-box h2{font-size:20px;font-weight:700;margin-bottom:6px}
+  .setup-box p{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+  .form-group{margin-bottom:16px}
+  .form-label{font-size:12px;font-weight:600;color:var(--slate-600);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+  .form-input{width:100%;padding:10px 12px;border:1.5px solid var(--slate-200);border-radius:10px;font-family:var(--font);font-size:14px;color:var(--slate-800);outline:none;transition:border-color .15s}
+  .form-input:focus{border-color:var(--green-500)}
+  .form-help{font-size:11px;color:var(--muted);margin-top:4px}
+  .setup-btn{width:100%;padding:12px;background:var(--green-600);color:#fff;border:none;border-radius:10px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:background .15s;margin-top:4px}
+  .setup-btn:hover{background:var(--green-700)}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--slate-900);color:#fff;padding:10px 20px;border-radius:99px;font-size:13px;font-weight:500;z-index:300;transition:transform .3s cubic-bezier(.4,0,.2,1);pointer-events:none;white-space:nowrap}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  /* LOADING */
+  .loading{text-align:center;padding:40px;color:var(--muted);font-size:14px}
+  .spinner{width:28px;height:28px;border:3px solid var(--slate-200);border-top-color:var(--green-500);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* EMPTY */
+  .empty{text-align:center;padding:60px 20px;color:var(--muted)}
+  .empty-icon{font-size:40px;margin-bottom:12px}
+  .empty p{font-size:14px}
+
+  /* CHIP */
+  .chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px}
+  .chip-green{background:var(--green-100);color:var(--green-700)}
+
+  @media(max-width:480px){
+    .stats-grid{grid-template-columns:1fr 1fr}
+    .stat-card:last-child{grid-column:span 2}
+    .nav-title span{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- SETUP OVERLAY -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-box">
+    <div style="font-size:32px;margin-bottom:12px">🌾</div>
+    <h2>Konfigurasi Supabase</h2>
+    <p>Masukkan kredensial Supabase Anda. Data gratis, tidak perlu kartu kredit. Daftar di <strong>supabase.com</strong> → buat project → ambil URL & anon key.</p>
+    <div class="form-group">
+      <label class="form-label">Supabase URL</label>
+      <input class="form-input" id="cfgUrl" placeholder="https://xxxx.supabase.co" type="url">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Anon Key</label>
+      <input class="form-input" id="cfgKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5c..." type="text">
+      <div class="form-help">Project Settings → API → anon public key</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nama Dusun (opsional)</label>
+      <input class="form-input" id="cfgDusun" placeholder="Dusun Sumber Jaya" type="text">
+    </div>
+    <button class="setup-btn" onclick="saveConfig()">Mulai →</button>
+    <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:12px">Data disimpan di localStorage browser Anda</p>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <div class="nav-logo">🌾</div>
+      <div class="nav-title">
+        Jimpitan Dusun
+        <span id="navDusun"></span>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('minggu-ini')">Minggu Ini</button>
+      <button class="tab-btn" onclick="switchTab('riwayat')">Riwayat</button>
+    </div>
+  </div>
+</nav>
+
+<!-- MINGGU INI -->
+<div class="view active" id="view-minggu-ini">
+
+  <div class="page-header" style="margin-top:20px">
+    <h2 id="pageTitle">Jimpitan Senin</h2>
+    <p id="pageSubtitle">Loading...</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card green">
+      <div class="stat-label">Terkumpul</div>
+      <div class="stat-value" id="statTerkumpul">Rp0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Sudah Bayar</div>
+      <div class="stat-value" id="statBayar">0/28</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-label">Belum Bayar</div>
+      <div class="stat-value" id="statBelum">28</div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-header">
+      <span class="progress-label">Progress Pembayaran</span>
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="section-title">Daftar Warga</div>
+  <div class="warga-grid" id="wargaGrid"></div>
+
+  <div id="belumSection" style="display:none">
+    <div class="section-title">Yang belum memberi jimpitan</div>
+    <div class="belum-box">
+      <h3>📋 Daftar Belum Bayar</h3>
+      <div id="belumList"></div>
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <button class="btn btn-primary" id="btnSimpan" onclick="simpanData()">
+      <span>💾</span> Simpan Minggu Ini
+    </button>
+    <button class="btn btn-outline" onclick="confirmReset()">↺</button>
+  </div>
+
+  <div style="margin-bottom:10px">
+    <button class="btn btn-outline" style="font-size:12px;padding:7px 12px" onclick="showSetup()">⚙ Ubah Konfigurasi</button>
+  </div>
+</div>
+
+<!-- RIWAYAT -->
+<div class="view" id="view-riwayat">
+  <div class="page-header" style="margin-top:20px">
+    <h2>Riwayat Jimpitan</h2>
+    <p>Semua data minggu sebelumnya</p>
+  </div>
+
+  <div class="akumulasi-bar" id="akumulasiBar">
+    <div class="akumulasi-icon">💰</div>
+    <div>
+      <div class="akumulasi-label">Total Akumulasi Semua Minggu</div>
+      <div class="akumulasi-value" id="akumulasiValue">Rp0</div>
+      <div class="akumulasi-sub" id="akumulasiSub">0 minggu tercatat</div>
+    </div>
+  </div>
+
+  <div id="riwayatContent"><div class="loading"><div class="spinner"></div>Memuat riwayat...</div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIG & STATE
+// ============================================================
+const WARGA = [
+  "Pak Kirno","Kang Joyo","Mas Tono","Pak Joko",
+  "Mbak Sih","Mbah Hasan","Pak Kadus","Lik Yatno",
+  "Pak RW","Mbah Maridi","Mas Arif","Mbah e Intan",
+  "Om Min","Mak Iyem","Mbah Pelog","Mbah Semo",
+  "Mbah Mitro","Mbah Paidi","Bang Mandur","Pak SG",
+  "Mbah Padi","Mas Pur","Pak Karim an","Mbah RT",
+  "Mbah Yusuf", "Mas Pur Pur Mbak Darni","Mas Gejen","Mbah Timin"
+];
+
+let SUPABASE_URL = 'https://auhnsoghkczxnojqvaxu.supabase.co';
+let SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1aG5zb2doa2N6eG5vanF2YXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNjc0NzAsImV4cCI6MjA5MTY0MzQ3MH0.hBAtmnGZxwtlTe9oR_BZK9pXlToKx7Voz6VO150b9SY';
+let DUSUN_NAME = 'Dusun Ngentak';
+let currentWeekData = {}; // { wargaIdx: { paid: bool, reason: string } }
+let currentWeekKey = '';
+
+function getConfig() {
+  const c = JSON.parse(localStorage.getItem('jimpitan_config') || '{}');
+  SUPABASE_URL = c.url || '';
+  SUPABASE_KEY = c.key || '';
+  DUSUN_NAME = c.dusun || 'Dusun';
+}
+
+function saveConfig() {
+  const url = document.getElementById('cfgUrl').value.trim().replace(/\/$/, '');
+  const key = document.getElementById('cfgKey').value.trim();
+  const dusun = document.getElementById('cfgDusun').value.trim() || 'Dusun';
+  if (!url || !key) { alert('URL dan Key wajib diisi!'); return; }
+  localStorage.setItem('jimpitan_config', JSON.stringify({ url, key, dusun }));
+  document.getElementById('setupOverlay').style.display = 'none';
+  getConfig();
+  document.getElementById('navDusun').textContent = DUSUN_NAME;
+  init();
+}
+
+function showSetup() {
+  const c = JSON.parse(localStorage.getItem('jimpitan_config') || '{}');
+  document.getElementById('cfgUrl').value = c.url || '';
+  document.getElementById('cfgKey').value = c.key || '';
+  document.getElementById('cfgDusun').value = c.dusun || '';
+  document.getElementById('setupOverlay').style.display = 'flex';
+}
+
+// ============================================================
+// SUPABASE API HELPERS
+// ============================================================
+async function sbFetch(path, opts = {}) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    ...opts,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || 'return=representation',
+      ...(opts.headers || {})
+    }
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Supabase error ' + res.status);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+async function ensureTable() {
+  // Try a simple select; if fails (table missing), create via RPC isn't available in REST.
+  // We use a try/catch to detect and inform user.
+  try {
+    await sbFetch('jimpitan_minggu?limit=1', { method: 'GET', prefer: '' });
+  } catch (e) {
+    if (e.message.includes('42P01') || e.message.includes('does not exist')) {
+      showToast('⚠️ Tabel belum ada! Buat tabel dulu di Supabase (lihat README).');
+    }
+  }
+}
+
+async function getMingguByKey(weekKey) {
+  const rows = await sbFetch(`jimpitan_minggu?week_key=eq.${weekKey}&select=*`, { method: 'GET', prefer: '' });
+  return rows && rows.length ? rows[0] : null;
+}
+
+async function upsertMinggu(data) {
+  return await sbFetch('jimpitan_minggu', {
+    method: 'POST',
+    prefer: 'return=representation,resolution=merge-duplicates',
+    body: JSON.stringify(data),
+    headers: { 'Prefer': 'return=representation,resolution=merge-duplicates' }
+  });
+}
+
+async function getAllMinggu() {
+  return await sbFetch('jimpitan_minggu?select=*&order=week_key.desc', { method: 'GET', prefer: '' });
+}
+
+// ============================================================
+// WEEK UTILITIES
+// ============================================================
+function getMondayOfWeek(d = new Date()) {
+  const day = d.getDay(); // 0=Sun, 1=Mon...
+  const diff = (day === 0 ? -6 : 1 - day);
+  const mon = new Date(d);
+  mon.setDate(d.getDate() + diff);
+  mon.setHours(0,0,0,0);
+  return mon;
+}
+
+function formatWeekKey(d) {
+  return d.toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+function formatDateID(d) {
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function formatRupiah(n) {
+  return 'Rp' + n.toLocaleString('id-ID');
+}
+
+function getInitials(name) {
+  return name.split(' ').slice(-1)[0].slice(0, 2).toUpperCase();
+}
+
+// ============================================================
+// LOCAL DRAFT (auto-save per tab close)
+// ============================================================
+function saveDraft() {
+  localStorage.setItem('jimpitan_draft_' + currentWeekKey, JSON.stringify(currentWeekData));
+}
+
+function loadDraft(weekKey) {
+  const d = localStorage.getItem('jimpitan_draft_' + weekKey);
+  return d ? JSON.parse(d) : {};
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderStats() {
+  const paid = WARGA.filter((_, i) => currentWeekData[i] && currentWeekData[i].paid).length;
+  const total = paid * 1000;
+  const pct = Math.round(paid / WARGA.length * 100);
+
+  document.getElementById('statTerkumpul').textContent = formatRupiah(total);
+  document.getElementById('statBayar').textContent = paid + '/' + WARGA.length;
+  document.getElementById('statBelum').textContent = WARGA.length - paid;
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  // Belum section
+  const belumList = document.getElementById('belumList');
+  const belumSection = document.getElementById('belumSection');
+  const belumWarga = WARGA.filter((_, i) => !(currentWeekData[i] && currentWeekData[i].paid));
+  if (belumWarga.length === 0) {
+    belumSection.style.display = 'none';
+  } else {
+    belumSection.style.display = 'block';
+    belumList.innerHTML = belumWarga.map((nama, idx) => {
+      const realIdx = WARGA.indexOf(nama);
+      const reason = currentWeekData[realIdx] && currentWeekData[realIdx].reason;
+      return `<div class="belum-item">
+        <div class="belum-dot"></div>
+        <div>
+          <div class="belum-item-name">${nama}</div>
+          ${reason ? `<div class="belum-item-alasan">"${reason}"</div>` : '<div class="belum-item-alasan" style="color:#fca5a5">Alasan belum diisi</div>'}
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function renderWargaGrid() {
+  const grid = document.getElementById('wargaGrid');
+  grid.innerHTML = WARGA.map((nama, i) => {
+    const d = currentWeekData[i] || {};
+    const paid = !!d.paid;
+    const reason = d.reason || '';
+    const initials = getInitials(nama);
+    return `
+    <div class="warga-card${paid ? ' paid' : (reason ? ' unpaid-filled' : '')}" id="card-${i}">
+      <div class="card-main" onclick="toggleCard(${i})">
+        <div class="warga-avatar">${initials}</div>
+        <div class="warga-info">
+          <div class="warga-name">${nama}</div>
+          <div class="warga-status">${paid ? '✓ Sudah bayar — Rp1.000' : (reason ? '✗ Belum bayar' : 'Belum konfirmasi')}</div>
+        </div>
+        <div class="check-wrap">
+          <input type="checkbox" ${paid ? 'checked' : ''} onclick="event.stopPropagation();onCheckChange(${i}, this.checked)">
+        </div>
+      </div>
+      <div class="reason-wrap">
+        <label class="reason-label">Alasan tidak bayar:</label>
+        <textarea class="reason-input" rows="2" placeholder="Tulis alasan (misal: sedang pergi, sakit, dll...)" oninput="onReasonChange(${i}, this.value)">${reason}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateCard(i) {
+  const d = currentWeekData[i] || {};
+  const paid = !!d.paid;
+  const reason = d.reason || '';
+  const card = document.getElementById('card-' + i);
+  if (!card) return;
+  card.className = 'warga-card' + (paid ? ' paid' : (reason ? ' unpaid-filled' : ''));
+  card.querySelector('.warga-status').textContent = paid ? '✓ Sudah bayar — Rp1.000' : (reason ? '✗ Belum bayar' : 'Belum konfirmasi');
+  renderStats();
+}
+
+// ============================================================
+// INTERACTIONS
+// ============================================================
+function toggleCard(i) {
+  const cb = document.querySelector(`#card-${i} input[type=checkbox]`);
+  cb.checked = !cb.checked;
+  onCheckChange(i, cb.checked);
+}
+
+function onCheckChange(i, checked) {
+  if (!currentWeekData[i]) currentWeekData[i] = {};
+  currentWeekData[i].paid = checked;
+  if (checked) currentWeekData[i].reason = '';
+  updateCard(i);
+  if (checked) {
+    const ta = document.querySelector(`#card-${i} textarea`);
+    if (ta) ta.value = '';
+  }
+  saveDraft();
+}
+
+function onReasonChange(i, val) {
+  if (!currentWeekData[i]) currentWeekData[i] = {};
+  currentWeekData[i].reason = val;
+  updateCard(i);
+  saveDraft();
+}
+
+// ============================================================
+// SAVE
+// ============================================================
+async function simpanData() {
+  const btn = document.getElementById('btnSimpan');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> Menyimpan...';
+
+  try {
+    const paid = WARGA.filter((_, i) => currentWeekData[i] && currentWeekData[i].paid).length;
+    const details = WARGA.map((nama, i) => ({
+      nama,
+      paid: !!(currentWeekData[i] && currentWeekData[i].paid),
+      reason: (currentWeekData[i] && currentWeekData[i].reason) || ''
+    }));
+
+    const payload = {
+      week_key: currentWeekKey,
+      week_label: formatDateID(getMondayOfWeek()),
+      total_paid: paid,
+      total_amount: paid * 1000,
+      details: details,
+      saved_at: new Date().toISOString()
+    };
+
+    await upsertMinggu(payload);
+    localStorage.removeItem('jimpitan_draft_' + currentWeekKey);
+    showToast('✓ Data berhasil disimpan!');
+  } catch (e) {
+    showToast('❌ Gagal: ' + e.message);
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>💾</span> Simpan Minggu Ini';
+  }
+}
+
+function confirmReset() {
+  if (!confirm('Reset semua checklist minggu ini?')) return;
+  currentWeekData = {};
+  saveDraft();
+  renderWargaGrid();
+  renderStats();
+  showToast('Data direset');
+}
+
+// ============================================================
+// RIWAYAT
+// ============================================================
+async function loadRiwayat() {
+  const el = document.getElementById('riwayatContent');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div>Memuat riwayat...</div>';
+
+  try {
+    const rows = await getAllMinggu();
+    if (!rows || rows.length === 0) {
+      el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Belum ada riwayat tersimpan.</p></div>';
+      document.getElementById('akumulasiValue').textContent = 'Rp0';
+      document.getElementById('akumulasiSub').textContent = '0 minggu tercatat';
+      return;
+    }
+
+    const totalAkum = rows.reduce((s, r) => s + (r.total_amount || 0), 0);
+    document.getElementById('akumulasiValue').textContent = formatRupiah(totalAkum);
+    document.getElementById('akumulasiSub').textContent = rows.length + ' minggu tercatat';
+
+    el.innerHTML = '<div class="riwayat-list">' + rows.map((r, idx) => {
+      const details = Array.isArray(r.details) ? r.details : [];
+      const belum = details.filter(d => !d.paid);
+      return `
+      <div class="riwayat-card" id="rw-${idx}">
+        <div class="riwayat-header" onclick="toggleRiwayat(${idx})">
+          <div>
+            <div class="riwayat-date">📅 ${r.week_label || r.week_key}</div>
+            <div class="riwayat-meta">${r.total_paid}/28 bayar · ${belum.length} belum</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="riwayat-total">${formatRupiah(r.total_amount || 0)}</div>
+            <div class="riwayat-chevron">▼</div>
+          </div>
+        </div>
+        <div class="riwayat-body">
+          ${details.map(d => `
+          <div class="riwayat-row">
+            <div>
+              <div class="riwayat-row-name">${d.nama}</div>
+              ${!d.paid && d.reason ? `<div class="riwayat-alasan">"${d.reason}"</div>` : ''}
+            </div>
+            <span class="riwayat-row-status ${d.paid ? 'status-paid' : 'status-unpaid'}">${d.paid ? 'Sudah' : 'Belum'}</span>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }).join('') + '</div>';
+
+  } catch (e) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><p>Gagal memuat: ${e.message}</p></div>`;
+  }
+}
+
+function toggleRiwayat(idx) {
+  const card = document.getElementById('rw-' + idx);
+  card.classList.toggle('open');
+}
+
+// ============================================================
+// NAV
+// ============================================================
+function switchTab(tab) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + tab).classList.add('active');
+  event.target.classList.add('active');
+  if (tab === 'riwayat') loadRiwayat();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+async function init() {
+  const monday = getMondayOfWeek();
+  currentWeekKey = formatWeekKey(monday);
+  const label = formatDateID(monday);
+
+  document.getElementById('pageTitle').textContent = 'Jimpitan Senin, ' + monday.getDate() + ' ' + label.split(' ')[2] + ' ' + monday.getFullYear();
+  document.getElementById('pageSubtitle').textContent = 'Periode: ' + label + ' · Nilai Rp1.000/warga';
+
+  // Load draft first
+  currentWeekData = loadDraft(currentWeekKey);
+
+  // Try load from DB
+  if (SUPABASE_URL && SUPABASE_KEY) {
+    try {
+      await ensureTable();
+      const row = await getMingguByKey(currentWeekKey);
+      if (row && row.details) {
+        const dbData = {};
+        row.details.forEach((d, i) => {
+          dbData[i] = { paid: d.paid, reason: d.reason || '' };
+        });
+        // Merge: DB takes priority over draft
+        currentWeekData = dbData;
+        saveDraft(currentWeekKey);
+      }
+    } catch (e) {
+      console.warn('DB load error:', e.message);
+      showToast('⚠️ Gagal konek DB, menggunakan data lokal');
+    }
+  }
+
+  renderWargaGrid();
+  renderStats();
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+window.addEventListener('load', () => {
+  getConfig();
+  document.getElementById('navDusun').textContent = DUSUN_NAME;
+
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    document.getElementById('setupOverlay').style.display = 'flex';
+  } else {
+    document.getElementById('setupOverlay').style.display = 'none';
+    init();
+  }
+});
+</script>
+
+</body>
+</html>
