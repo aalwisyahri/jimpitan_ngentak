@@ -646,13 +646,13 @@ const DB = {
   //     headers:{'Prefer':'return=representation,resolution=merge-duplicates'},
   //     body: JSON.stringify(data)
   //   }),
-  upsertDaily: (data) =>
+ upsertDaily: (data) =>
   sb('daily_records', {
     method: 'POST',
     headers: {
       'Prefer': 'resolution=merge-duplicates'
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify([data]) // 🔥 WAJIB ARRAY
   }),
 
   deleteDaily: (dateKey) =>
