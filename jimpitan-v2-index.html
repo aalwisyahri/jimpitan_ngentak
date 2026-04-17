@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jimpitan Dusun</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g50:#f0fdf4;--g100:#dcfce7;--g200:#bbf7d0;--g500:#22c55e;--g600:#16a34a;--g700:#15803d;--g800:#166534;
+  --r50:#fff1f2;--r100:#ffe4e6;--r200:#fecdd3;--r500:#ef4444;--r600:#dc2626;--r800:#991b1b;
+  --a50:#fffbeb;--a100:#fef3c7;--a500:#f59e0b;--a600:#d97706;--a800:#92400e;
+  --b50:#eff6ff;--b100:#dbeafe;--b500:#3b82f6;--b600:#2563eb;--b700:#1d4ed8;
+  --s50:#f8fafc;--s100:#f1f5f9;--s200:#e2e8f0;--s300:#cbd5e1;--s400:#94a3b8;
+  --s500:#64748b;--s600:#475569;--s700:#334155;--s800:#1e293b;--s900:#0f172a;
+  --bg:#fafaf8;--surface:#fff;--muted:#64748b;
+  --font:'Plus Jakarta Sans',sans-serif;
+  --r:12px;--rl:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--s900);min-height:100vh;padding-bottom:80px}
+
+/* ── NAV ── */
+nav{background:var(--surface);border-bottom:1px solid var(--s200);position:sticky;top:0;z-index:100;padding:0 16px}
+.nav-inner{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo{width:32px;height:32px;background:var(--g600);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+.nav-title{font-size:15px;font-weight:700;color:var(--s800);line-height:1.2}
+.nav-sub{font-size:12px;font-weight:400;color:var(--muted)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.mode-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;cursor:pointer;border:none;font-family:var(--font);transition:all .15s}
+.mode-badge.admin{background:#fef3c7;color:#92400e}
+.mode-badge.warga{background:var(--s100);color:var(--s600)}
+.nav-tabs{display:flex;gap:4px}
+.tab-btn{padding:6px 12px;border:none;background:transparent;font-family:var(--font);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-radius:8px;transition:all .15s}
+.tab-btn.active{background:var(--g100);color:var(--g700)}
+.tab-btn:hover:not(.active){background:var(--s100)}
+
+/* ── VIEWS ── */
+.view{display:none;max-width:720px;margin:0 auto;padding:16px}
+.view.active{display:block}
+
+/* ── PAGE HEADER ── */
+.page-header{margin-bottom:16px}
+.page-header h2{font-size:20px;font-weight:700;color:var(--s900)}
+.page-header p{font-size:12px;color:var(--muted);margin-top:2px}
+.header-meta{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+.sync-status{font-size:11px;font-weight:600;transition:color .3s}
+.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px}
+.badge-final{background:var(--g100);color:var(--g700)}
+.badge-draft{background:var(--a100);color:var(--a800)}
+.badge-readonly{background:var(--b100);color:var(--b700)}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stat-card{background:var(--surface);border:1px solid var(--s200);border-radius:var(--r);padding:12px}
+.stat-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.stat-value{font-size:20px;font-weight:700;margin-top:3px}
+.stat-card.green .stat-value{color:var(--g600)}
+.stat-card.red .stat-value{color:var(--r600)}
+.stat-card.blue .stat-value{color:var(--b600)}
+
+/* ── PROGRESS ── */
+.progress-wrap{background:var(--surface);border:1px solid var(--s200);border-radius:var(--r);padding:12px;margin-bottom:16px}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.progress-label{font-size:12px;font-weight:600;color:var(--s700)}
+.progress-pct{font-size:12px;font-weight:700;color:var(--g600)}
+.progress-bar{height:8px;background:var(--s100);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--g500),var(--g600));border-radius:99px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+/* ── SECTION TITLE ── */
+.section-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+
+/* ── WARGA CARDS ── */
+.warga-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.warga-card{background:var(--surface);border:1.5px solid var(--s200);border-radius:var(--r);overflow:hidden;transition:border-color .2s}
+.warga-card.paid{border-color:#86efac;background:var(--g50)}
+.warga-card.unpaid-noted{border-color:var(--r200);background:var(--r50)}
+.warga-card.readonly .card-main{cursor:default}
+.card-main{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer}
+.warga-avatar{width:34px;height:34px;border-radius:50%;background:var(--s100);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--s500);flex-shrink:0}
+.warga-card.paid .warga-avatar{background:var(--g100);color:var(--g700)}
+.warga-card.unpaid-noted .warga-avatar{background:var(--r100);color:var(--r800)}
+.warga-info{flex:1;min-width:0}
+.warga-name{font-size:13px;font-weight:600;color:var(--s800)}
+.warga-status{font-size:11px;margin-top:1px;color:var(--muted)}
+.warga-card.paid .warga-status{color:var(--g600);font-weight:500}
+.warga-card.unpaid-noted .warga-status{color:var(--r600)}
+.check-wrap input[type=checkbox]{width:18px;height:18px;accent-color:var(--g600);cursor:pointer}
+.check-wrap input:disabled{cursor:default;opacity:.5}
+.reason-wrap{padding:0 12px 10px;border-top:1px solid var(--s100)}
+.warga-card.paid .reason-wrap{display:none}
+.reason-label{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px;display:block;padding-top:8px;text-transform:uppercase;letter-spacing:.04em}
+.reason-input{width:100%;padding:7px 10px;border:1px solid var(--s200);border-radius:8px;font-family:var(--font);font-size:12px;color:var(--s700);background:var(--surface);resize:none;outline:none;transition:border-color .15s}
+.reason-input:focus{border-color:var(--s400)}
+.reason-input:disabled{background:var(--s50);color:var(--muted);cursor:default}
+.reason-input::placeholder{color:var(--s300)}
+
+/* ── BELUM ── */
+.belum-box{background:var(--r50);border:1px solid var(--r200);border-radius:var(--r);padding:12px;margin-bottom:16px}
+.belum-box h3{font-size:12px;font-weight:700;color:var(--r800);margin-bottom:8px}
+.belum-item{display:flex;gap:6px;margin-bottom:6px;align-items:flex-start}
+.belum-dot{width:5px;height:5px;border-radius:50%;background:var(--r400);flex-shrink:0;margin-top:5px}
+.belum-name{font-size:12px;font-weight:600;color:var(--r800)}
+.belum-alasan{font-size:11px;color:var(--r600);font-style:italic}
+
+/* ── ACTIONS ── */
+.action-bar{display:flex;gap:8px;margin-bottom:16px}
+.btn{padding:9px 18px;border:none;border-radius:var(--r);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--g600);color:#fff;flex:1}
+.btn-primary:hover{background:var(--g700)}
+.btn-primary:disabled{background:var(--s300);cursor:not-allowed;transform:none}
+.btn-outline{background:var(--surface);border:1.5px solid var(--s200);color:var(--s600)}
+.btn-outline:hover{background:var(--s50)}
+.btn-danger{background:transparent;border:1.5px solid var(--r200);color:var(--r600)}
+.btn-danger:hover{background:var(--r50)}
+
+/* ── RIWAYAT ── */
+.riwayat-list{display:flex;flex-direction:column;gap:10px}
+.riwayat-card{background:var(--surface);border:1px solid var(--s200);border-radius:var(--rl);overflow:hidden}
+.riwayat-header{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.riwayat-header:hover{background:var(--s50)}
+.riwayat-date{font-size:13px;font-weight:700;color:var(--s800)}
+.riwayat-meta{font-size:11px;color:var(--muted);margin-top:1px}
+.riwayat-right{display:flex;align-items:center;gap:6px}
+.riwayat-total{font-size:15px;font-weight:700;color:var(--g600)}
+.riwayat-chevron{font-size:11px;color:var(--muted);transition:transform .2s}
+.riwayat-card.open .riwayat-chevron{transform:rotate(180deg)}
+.riwayat-body{display:none;padding:0 14px 12px;border-top:1px solid var(--s100)}
+.riwayat-card.open .riwayat-body{display:block}
+.riwayat-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--s100);font-size:12px}
+.riwayat-row:last-child{border-bottom:none}
+.riwayat-row-name{color:var(--s700);font-weight:500}
+.riwayat-row-status{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px}
+.status-paid{background:var(--g100);color:var(--g700)}
+.status-unpaid{background:var(--r100);color:var(--r700,#b91c1c)}
+.riwayat-alasan{font-size:10px;color:var(--muted);font-style:italic}
+.riwayat-actions{display:flex;gap:4px}
+.icon-btn{background:transparent;border:none;cursor:pointer;font-size:14px;padding:3px 6px;border-radius:6px;color:var(--muted);transition:all .15s}
+.icon-btn:hover{background:var(--s100)}
+.icon-btn.red:hover{background:var(--r50);color:var(--r600)}
+
+/* ── AKUMULASI ── */
+.akum-bar{background:var(--surface);border:1px solid var(--s200);border-radius:var(--rl);padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+.akum-icon{width:42px;height:42px;background:var(--g100);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.akum-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.akum-value{font-size:22px;font-weight:700;color:var(--g700)}
+.akum-sub{font-size:11px;color:var(--muted);margin-top:1px}
+
+/* ── ADMIN LOG PANEL ── */
+.log-panel{background:var(--surface);border:1px solid var(--s200);border-radius:var(--r);padding:12px;margin-bottom:14px}
+.log-panel h3{font-size:12px;font-weight:700;color:var(--s700);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.log-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:0}
+.log-stat{text-align:center;padding:8px;background:var(--s50);border-radius:8px}
+.log-stat-value{font-size:18px;font-weight:700;color:var(--s800)}
+.log-stat-label{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ── ACTIVITY LOG ── */
+.activity-panel{background:var(--surface);border:1px solid var(--s200);border-radius:var(--r);padding:12px;margin-bottom:14px}
+.activity-panel h3{font-size:12px;font-weight:700;color:var(--s700);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.activity-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--s100)}
+.activity-item:last-child{border-bottom:none}
+.activity-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.dot-pay{background:var(--g500)}
+.dot-unpay{background:var(--r500)}
+.dot-admin{background:var(--a500)}
+.dot-reset{background:var(--s400)}
+.activity-text{font-size:12px;color:var(--s700);flex:1}
+.activity-time{font-size:10px;color:var(--muted);white-space:nowrap;margin-top:1px}
+.activity-empty{font-size:12px;color:var(--muted);text-align:center;padding:16px 0}
+
+/* ── SETUP OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+.overlay-box{background:var(--surface);border-radius:var(--rl);padding:24px;width:100%;max-width:400px}
+.overlay-box h2{font-size:18px;font-weight:700;margin-bottom:4px}
+.overlay-box p{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:700;color:var(--s600);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.form-input{width:100%;padding:9px 12px;border:1.5px solid var(--s200);border-radius:10px;font-family:var(--font);font-size:14px;color:var(--s800);outline:none;transition:border-color .15s}
+.form-input:focus{border-color:var(--g500)}
+.form-help{font-size:11px;color:var(--muted);margin-top:3px}
+.overlay-btn{width:100%;padding:11px;background:var(--g600);color:#fff;border:none;border-radius:10px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;margin-top:2px}
+.overlay-btn:hover{background:var(--g700)}
+
+/* ── PIN OVERLAY ── */
+.pin-dots{display:flex;gap:10px;justify-content:center;margin:16px 0}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--s300);transition:all .15s}
+.pin-dot.filled{background:var(--g600);border-color:var(--g600)}
+.pin-dot.error{background:var(--r500);border-color:var(--r500)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:240px;margin:0 auto}
+.pin-key{padding:14px;background:var(--s50);border:1px solid var(--s200);border-radius:10px;font-family:var(--font);font-size:18px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+.pin-key:hover{background:var(--s100)}
+.pin-key:active{transform:scale(.93)}
+.pin-key.del{font-size:14px;color:var(--muted)}
+.pin-error{font-size:12px;color:var(--r600);text-align:center;margin-top:8px;min-height:16px}
+
+/* ── CONFIRM MODAL ── */
+.confirm-box{text-align:center}
+.confirm-box .icon{font-size:36px;margin-bottom:10px}
+.confirm-box h3{font-size:16px;font-weight:700;margin-bottom:6px}
+.confirm-box p{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+.confirm-actions{display:flex;gap:8px}
+.confirm-cancel{flex:1;padding:9px;border:1.5px solid var(--s200);border-radius:10px;background:transparent;font-family:var(--font);font-size:13px;font-weight:600;color:var(--s600);cursor:pointer}
+.confirm-ok{flex:1;padding:9px;border:none;border-radius:10px;background:var(--r600);font-family:var(--font);font-size:13px;font-weight:600;color:#fff;cursor:pointer}
+
+/* ── FOOTER ── */
+.footer{max-width:720px;margin:0 auto;padding:16px;border-top:1px solid var(--s200);display:flex;align-items:center;justify-content:space-between;flex-wrap:gap}
+.footer-info{font-size:11px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap}
+.footer-item{display:flex;align-items:center;gap:4px}
+
+/* ── MISC ── */
+.loading{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+.spinner{width:24px;height:24px;border:2px solid var(--s200);border-top-color:var(--g500);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:48px 16px;color:var(--muted)}
+.empty-icon{font-size:36px;margin-bottom:10px}
+.empty p{font-size:13px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--s900);color:#fff;padding:9px 18px;border-radius:99px;font-size:12px;font-weight:500;z-index:300;transition:transform .3s cubic-bezier(.4,0,.2,1);pointer-events:none;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.divider{height:1px;background:var(--s100);margin:12px 0}
+.btn-hapus-semua{width:100%;padding:9px;border:1.5px solid var(--r200);border-radius:var(--r);background:transparent;font-family:var(--font);font-size:12px;font-weight:600;color:var(--r600);cursor:pointer;margin-bottom:12px;transition:all .15s}
+.btn-hapus-semua:hover{background:var(--r50)}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stat-card:last-child{grid-column:span 2}
+  .log-grid{grid-template-columns:1fr 1fr}
+  .log-stat:last-child{grid-column:span 2}
+  .nav-tabs .tab-btn{padding:5px 8px;font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     OVERLAY: SETUP SUPABASE
+════════════════════════════════════════ -->
+<div class="overlay" id="setupOverlay" style="display:none">
+  <div class="overlay-box">
+    <div style="font-size:28px;margin-bottom:10px">🌾</div>
+    <h2>Setup Koneksi</h2>
+    <p>Masukkan kredensial Supabase Anda. Daftar gratis di <strong>supabase.com</strong> → buat project → ambil URL & anon key.</p>
+    <div class="form-group">
+      <label class="form-label">Supabase URL</label>
+      <input class="form-input" id="cfgUrl" placeholder="https://xxxx.supabase.co" type="url">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Anon Key</label>
+      <input class="form-input" id="cfgKey" placeholder="eyJhbGci..." type="text">
+      <div class="form-help">Project Settings → API → anon public</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nama Dusun</label>
+      <input class="form-input" id="cfgDusun" placeholder="Dusun Sumber Jaya" type="text">
+    </div>
+    <div class="form-group">
+      <label class="form-label">PIN Admin (4 digit)</label>
+      <input class="form-input" id="cfgPin" placeholder="contoh: 1234" type="password" maxlength="4" pattern="[0-9]{4}">
+      <div class="form-help">PIN untuk masuk mode edit admin</div>
+    </div>
+    <button class="overlay-btn" onclick="saveConfig()">Mulai Aplikasi →</button>
+    <p style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px">Konfigurasi tersimpan di browser ini</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     OVERLAY: PIN ADMIN
+════════════════════════════════════════ -->
+<div class="overlay" id="pinOverlay" style="display:none">
+  <div class="overlay-box" style="max-width:300px">
+    <div style="font-size:28px;margin-bottom:8px;text-align:center">🔐</div>
+    <h2 style="text-align:center;font-size:16px">Masuk Mode Admin</h2>
+    <p style="text-align:center;margin-bottom:4px">Masukkan PIN 4 digit</p>
+    <div class="pin-dots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+    </div>
+    <div class="pin-error" id="pinError"></div>
+    <div class="pin-pad">
+      <button class="pin-key" onclick="pinPress('1')">1</button>
+      <button class="pin-key" onclick="pinPress('2')">2</button>
+      <button class="pin-key" onclick="pinPress('3')">3</button>
+      <button class="pin-key" onclick="pinPress('4')">4</button>
+      <button class="pin-key" onclick="pinPress('5')">5</button>
+      <button class="pin-key" onclick="pinPress('6')">6</button>
+      <button class="pin-key" onclick="pinPress('7')">7</button>
+      <button class="pin-key" onclick="pinPress('8')">8</button>
+      <button class="pin-key" onclick="pinPress('9')">9</button>
+      <button class="pin-key del" onclick="pinClear()">↺</button>
+      <button class="pin-key" onclick="pinPress('0')">0</button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+    </div>
+    <button class="btn-outline" style="width:100%;margin-top:12px;padding:8px;font-size:12px;border-radius:8px;cursor:pointer;border:1.5px solid var(--s200);background:transparent;font-family:var(--font);font-weight:600;color:var(--muted)" onclick="closePinOverlay()">Batal</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     OVERLAY: CONFIRM
+════════════════════════════════════════ -->
+<div class="overlay" id="confirmOverlay" style="display:none">
+  <div class="overlay-box" style="max-width:340px">
+    <div class="confirm-box">
+      <div class="icon" id="confirmIcon">⚠️</div>
+      <h3 id="confirmTitle">Konfirmasi</h3>
+      <p id="confirmMsg">Yakin?</p>
+      <div class="confirm-actions">
+        <button class="confirm-cancel" onclick="closeConfirm()">Batal</button>
+        <button class="confirm-ok" id="confirmOk">Hapus</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     NAV
+════════════════════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <div class="nav-logo">🌾</div>
+      <div>
+        <div class="nav-title" id="navTitle">Jimpitan Dusun</div>
+        <div class="nav-sub" id="navSub">Loading...</div>
+      </div>
+    </div>
+    <div class="nav-right">
+      <button class="mode-badge warga" id="modeBadge" onclick="handleModeClick()">👤 Warga</button>
+      <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('hari-ini',this)">Hari Ini</button>
+        <button class="tab-btn" onclick="switchTab('riwayat',this)">Riwayat</button>
+        <button class="tab-btn" onclick="switchTab('log',this)">Log</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     TAB: HARI INI
+════════════════════════════════════════ -->
+<div class="view active" id="view-hari-ini">
+
+  <div class="page-header">
+    <h2 id="pageTitle">Jimpitan Hari Ini</h2>
+    <p id="pageSubtitle">Memuat...</p>
+    <div class="header-meta">
+      <span class="sync-status" id="syncStatus" style="color:var(--muted)">○ Memuat</span>
+      <span class="badge badge-draft" id="finalBadge" style="display:none">✓ Final</span>
+      <span class="badge badge-readonly" id="readonlyBadge" style="display:none">🔒 Read-only</span>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card green">
+      <div class="stat-label">Terkumpul</div>
+      <div class="stat-value" id="statTotal">Rp0</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-label">Sudah Bayar</div>
+      <div class="stat-value" id="statBayar">0/28</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-label">Belum Bayar</div>
+      <div class="stat-value" id="statBelum">28</div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-header">
+      <span class="progress-label">Progress Hari Ini</span>
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="section-title">Daftar Warga</div>
+  <div class="warga-grid" id="wargaGrid"></div>
+
+  <div id="belumSection" style="display:none">
+    <div class="section-title">Yang belum memberi jimpitan</div>
+    <div class="belum-box">
+      <h3>📋 Belum Bayar</h3>
+      <div id="belumList"></div>
+    </div>
+  </div>
+
+  <div class="action-bar" id="actionBar">
+    <button class="btn btn-primary" id="btnSimpan" onclick="simpanData()">
+      <span>💾</span> Tandai Selesai
+    </button>
+    <button class="btn btn-outline" onclick="confirmReset()" title="Reset hari ini">↺</button>
+  </div>
+
+  <div style="margin-bottom:10px">
+    <button class="btn btn-outline" style="font-size:11px;padding:6px 12px" onclick="showSetup()">⚙ Ubah Konfigurasi</button>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════
+     TAB: RIWAYAT
+════════════════════════════════════════ -->
+<div class="view" id="view-riwayat">
+
+  <div class="page-header">
+    <h2>Riwayat Harian</h2>
+    <p>Semua catatan jimpitan per hari</p>
+  </div>
+
+  <div class="akum-bar">
+    <div class="akum-icon">💰</div>
+    <div>
+      <div class="akum-label">Total Akumulasi</div>
+      <div class="akum-value" id="akumValue">Rp0</div>
+      <div class="akum-sub" id="akumSub">0 hari tercatat</div>
+    </div>
+  </div>
+
+  <button class="btn-hapus-semua" id="btnHapusSemua" style="display:none" onclick="hapusSemua()">🗑 Hapus Semua Riwayat</button>
+
+  <div id="riwayatContent">
+    <div class="loading"><div class="spinner"></div>Memuat riwayat...</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     TAB: LOG ADMIN
+════════════════════════════════════════ -->
+<div class="view" id="view-log">
+
+  <div class="page-header">
+    <h2>Log & Statistik</h2>
+    <p>Kunjungan, akses admin, dan aktivitas terbaru</p>
+  </div>
+
+  <!-- Statistik hari ini -->
+  <div class="log-panel">
+    <h3>📊 Statistik Hari Ini</h3>
+    <div class="log-grid">
+      <div class="log-stat">
+        <div class="log-stat-value" id="logVisits">–</div>
+        <div class="log-stat-label">Kunjungan</div>
+      </div>
+      <div class="log-stat">
+        <div class="log-stat-value" id="logAdminAccess">–</div>
+        <div class="log-stat-label">Akses Admin</div>
+      </div>
+      <div class="log-stat">
+        <div class="log-stat-value" id="logLastAdmin">–</div>
+        <div class="log-stat-label">Admin Terakhir</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity log -->
+  <div class="activity-panel">
+    <h3>⚡ Aktivitas Terbaru <span style="font-size:10px;font-weight:400;color:var(--muted)">(10 terakhir)</span></h3>
+    <div id="activityList"><div class="activity-empty">Belum ada aktivitas</div></div>
+  </div>
+
+  <!-- Log admin per hari -->
+  <div class="log-panel">
+    <h3>🔑 Riwayat Akses Admin</h3>
+    <div id="adminLogList"><div class="activity-empty">Belum ada log</div></div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer">
+    <div class="footer-info">
+      <span class="footer-item">👁 Kunjungan hari ini: <strong id="footerVisits">–</strong></span>
+      <span class="footer-item">🕐 Terakhir: <strong id="footerLastAdmin">–</strong></span>
+    </div>
+    <span style="font-size:10px;color:var(--muted)">Jimpitan v2.0</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ═══════════════════════════════════════
+// KONSTANTA
+// ═══════════════════════════════════════
+const WARGA = [
+  "Pak Slamet","Bu Slamet","Pak Haryono","Bu Haryono",
+  "Pak Sugeng","Bu Sugeng","Pak Bambang","Bu Bambang",
+  "Pak Wahyu","Bu Wahyu","Pak Agus","Bu Agus",
+  "Pak Eko","Bu Eko","Pak Tri","Bu Tri",
+  "Pak Joko","Bu Joko","Pak Rudi","Bu Rudi",
+  "Pak Darmanto","Bu Darmanto","Pak Sutrisno","Bu Sutrisno",
+  "Pak Widodo","Bu Widodo","Pak Hendro","Bu Hendro"
+];
+const NILAI_PER_WARGA = 1000;
+const MAX_ACTIVITY = 10;
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let CFG = {};           // { url, key, dusun, pin }
+let isAdmin = false;    // mode saat ini
+let todayKey = '';      // YYYY-MM-DD
+let todayData = {};     // { idx: { paid, reason } }
+let autoSaveTimer = null;
+let isSyncing = false;
+
+// ═══════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════
+function loadConfig() {
+  CFG = JSON.parse(localStorage.getItem('jimpitan_cfg') || '{}');
+}
+
+function saveConfig() {
+  const url = document.getElementById('cfgUrl').value.trim().replace(/\/$/, '');
+  const key = document.getElementById('cfgKey').value.trim();
+  const dusun = document.getElementById('cfgDusun').value.trim() || 'Dusun';
+  const pin = document.getElementById('cfgPin').value.trim();
+  if (!url || !key) { alert('URL dan Key wajib diisi!'); return; }
+  if (pin && !/^\d{4}$/.test(pin)) { alert('PIN harus 4 digit angka!'); return; }
+  CFG = { url, key, dusun, pin: pin || '1234' };
+  localStorage.setItem('jimpitan_cfg', JSON.stringify(CFG));
+  document.getElementById('setupOverlay').style.display = 'none';
+  document.getElementById('navTitle').textContent = CFG.dusun;
+  boot();
+}
+
+function showSetup() {
+  document.getElementById('cfgUrl').value = CFG.url || '';
+  document.getElementById('cfgKey').value = CFG.key || '';
+  document.getElementById('cfgDusun').value = CFG.dusun || '';
+  document.getElementById('cfgPin').value = '';
+  document.getElementById('setupOverlay').style.display = 'flex';
+}
+
+// ═══════════════════════════════════════
+// DATE HELPERS
+// ═══════════════════════════════════════
+function getTodayKey() {
+  const d = new Date();
+  return d.toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+function formatDateID(str) {
+  // str = YYYY-MM-DD
+  const d = new Date(str + 'T00:00:00');
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Januari','Februari','Maret','April','Mei','Juni',
+                  'Juli','Agustus','September','Oktober','November','Desember'];
+  return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function formatTimeID(isoStr) {
+  if (!isoStr) return '–';
+  const d = new Date(isoStr);
+  return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+}
+
+function formatDateTimeShort(isoStr) {
+  if (!isoStr) return '–';
+  const d = new Date(isoStr);
+  const today = new Date();
+  const isToday = d.toDateString() === today.toDateString();
+  if (isToday) return formatTimeID(isoStr);
+  return d.toLocaleDateString('id-ID', { day:'2-digit', month:'short' }) + ' ' + formatTimeID(isoStr);
+}
+
+function formatRupiah(n) {
+  return 'Rp' + Number(n).toLocaleString('id-ID');
+}
+
+function getInitials(name) {
+  const parts = name.split(' ');
+  return parts.length >= 2
+    ? (parts[0][0] + parts[1][0]).toUpperCase()
+    : name.slice(0, 2).toUpperCase();
+}
+
+// ═══════════════════════════════════════
+// SUPABASE HELPER
+// ═══════════════════════════════════════
+async function sb(path, opts = {}) {
+  const res = await fetch(CFG.url + '/rest/v1/' + path, {
+    ...opts,
+    headers: {
+      'apikey': CFG.key,
+      'Authorization': 'Bearer ' + CFG.key,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || 'return=representation',
+      ...(opts.headers || {})
+    }
+  });
+  if (!res.ok) {
+    const e = await res.json().catch(() => ({}));
+    throw new Error(e.message || 'DB error ' + res.status);
+  }
+  const txt = await res.text();
+  return txt ? JSON.parse(txt) : null;
+}
+
+// Shorthand queries
+const DB = {
+  getDailyRecord: (dateKey) =>
+    sb(`daily_records?date_key=eq.${dateKey}&select=*`, { method:'GET', prefer:'' }),
+
+  upsertDaily: (data) =>
+    sb('daily_records', {
+      method:'POST',
+      prefer:'return=representation,resolution=merge-duplicates',
+      headers:{'Prefer':'return=representation,resolution=merge-duplicates'},
+      body: JSON.stringify(data)
+    }),
+
+  deleteDaily: (dateKey) =>
+    sb(`daily_records?date_key=eq.${dateKey}`, { method:'DELETE', prefer:'' }),
+
+  deleteAllDaily: () =>
+    sb('daily_records?id=gt.0', { method:'DELETE', prefer:'' }),
+
+  getAllDaily: () =>
+    sb('daily_records?select=*&order=date_key.desc', { method:'GET', prefer:'' }),
+
+  // visits
+  getVisit: (dateKey) =>
+    sb(`visits?date_key=eq.${dateKey}&select=*`, { method:'GET', prefer:'' }),
+
+  upsertVisit: (data) =>
+    sb('visits', {
+      method:'POST',
+      prefer:'return=representation,resolution=merge-duplicates',
+      headers:{'Prefer':'return=representation,resolution=merge-duplicates'},
+      body: JSON.stringify(data)
+    }),
+
+  // admin_logs
+  insertAdminLog: (data) =>
+    sb('admin_logs', { method:'POST', body: JSON.stringify(data) }),
+
+  getAdminLogs: (dateKey) =>
+    sb(`admin_logs?date_key=eq.${dateKey}&select=*&order=created_at.desc`, { method:'GET', prefer:'' }),
+
+  getAdminLogsAll: () =>
+    sb('admin_logs?select=*&order=created_at.desc&limit=30', { method:'GET', prefer:'' }),
+
+  // activity_logs
+  insertActivity: (data) =>
+    sb('activity_logs', { method:'POST', body: JSON.stringify(data) }),
+
+  getActivities: () =>
+    sb(`activity_logs?select=*&order=created_at.desc&limit=${MAX_ACTIVITY}`, { method:'GET', prefer:'' }),
+};
+
+// ═══════════════════════════════════════
+// ADMIN MODE
+// ═══════════════════════════════════════
+let pinBuffer = '';
+
+function handleModeClick() {
+  if (isAdmin) {
+    // Keluar dari admin mode
+    isAdmin = false;
+    localStorage.removeItem('jimpitan_admin_session');
+    updateModeUI();
+    showToast('Keluar dari mode admin');
+    renderWargaGrid();
+  } else {
+    openPinOverlay();
+  }
+}
+
+function openPinOverlay() {
+  pinBuffer = '';
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+  document.getElementById('pinOverlay').style.display = 'flex';
+}
+
+function closePinOverlay() {
+  document.getElementById('pinOverlay').style.display = 'none';
+  pinBuffer = '';
+}
+
+function pinPress(digit) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += digit;
+  updatePinDots();
+  if (pinBuffer.length === 4) {
+    setTimeout(checkPin, 200);
+  }
+}
+
+function pinDel() {
+  pinBuffer = pinBuffer.slice(0, -1);
+  updatePinDots();
+}
+
+function pinClear() {
+  pinBuffer = '';
+  updatePinDots();
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    const d = document.getElementById('pd' + i);
+    d.className = 'pin-dot' + (i < pinBuffer.length ? ' filled' : '');
+  }
+}
+
+async function checkPin() {
+  if (pinBuffer === (CFG.pin || '1234')) {
+    isAdmin = true;
+    // Simpan session admin (expired jam 23:59 hari ini)
+    const expiry = new Date();
+    expiry.setHours(23, 59, 59, 0);
+    localStorage.setItem('jimpitan_admin_session', JSON.stringify({
+      date: todayKey,
+      expiry: expiry.toISOString()
+    }));
+    closePinOverlay();
+    updateModeUI();
+    renderWargaGrid();
+    showToast('✓ Mode Admin aktif');
+    // Log akses admin
+    await logAdminAccess();
+  } else {
+    // Animasi error
+    for (let i = 0; i < 4; i++) document.getElementById('pd' + i).className = 'pin-dot error';
+    document.getElementById('pinError').textContent = 'PIN salah, coba lagi';
+    setTimeout(() => {
+      pinBuffer = '';
+      updatePinDots();
+      document.getElementById('pinError').textContent = '';
+    }, 1200);
+  }
+}
+
+function checkAdminSession() {
+  try {
+    const s = JSON.parse(localStorage.getItem('jimpitan_admin_session') || 'null');
+    if (!s) return false;
+    if (s.date !== todayKey) return false; // session beda hari
+    if (new Date() > new Date(s.expiry)) return false; // expired
+    return true;
+  } catch { return false; }
+}
+
+function updateModeUI() {
+  const badge = document.getElementById('modeBadge');
+  const readonly = document.getElementById('readonlyBadge');
+  const actionBar = document.getElementById('actionBar');
+  if (isAdmin) {
+    badge.textContent = '🔑 Admin';
+    badge.className = 'mode-badge admin';
+    readonly.style.display = 'none';
+    actionBar.style.display = 'flex';
+  } else {
+    badge.textContent = '👤 Warga';
+    badge.className = 'mode-badge warga';
+    readonly.style.display = 'inline-flex';
+    actionBar.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════
+// LOGGING
+// ═══════════════════════════════════════
+async function incrementVisit() {
+  try {
+    const rows = await DB.getVisit(todayKey);
+    const current = (rows && rows.length) ? rows[0] : null;
+    const count = current ? current.count + 1 : 1;
+    await DB.upsertVisit({ date_key: todayKey, count });
+    return count;
+  } catch (e) {
+    console.warn('Visit log gagal:', e.message);
+    return null;
+  }
+}
+
+async function logAdminAccess() {
+  try {
+    await DB.insertAdminLog({
+      date_key: todayKey,
+      accessed_at: new Date().toISOString()
+    });
+  } catch (e) {
+    console.warn('Admin log gagal:', e.message);
+  }
+}
+
+async function logActivity(type, message) {
+  try {
+    await DB.insertActivity({
+      date_key: todayKey,
+      type,        // 'pay' | 'unpay' | 'admin' | 'reset' | 'final'
+      message,
+      created_at: new Date().toISOString()
+    });
+  } catch (e) {
+    console.warn('Activity log gagal:', e.message);
+  }
+}
+
+// ═══════════════════════════════════════
+// LOCAL DRAFT (offline fallback)
+// ═══════════════════════════════════════
+function saveDraftLocal() {
+  localStorage.setItem('jimpitan_draft_' + todayKey, JSON.stringify(todayData));
+}
+
+function loadDraftLocal(dateKey) {
+  try {
+    const d = localStorage.getItem('jimpitan_draft_' + dateKey);
+    return d ? JSON.parse(d) : {};
+  } catch { return {}; }
+}
+
+// ═══════════════════════════════════════
+// AUTO-SAVE KE SUPABASE
+// ═══════════════════════════════════════
+function scheduleAutoSave() {
+  saveDraftLocal();
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(doAutoSave, 800);
+}
+
+async function doAutoSave() {
+  if (isSyncing) return;
+  isSyncing = true;
+  setSyncStatus('syncing');
+  try {
+    await DB.upsertDaily(buildPayload(false));
+    setSyncStatus('saved');
+  } catch (e) {
+    setSyncStatus('error');
+    console.warn('Auto-save gagal:', e.message);
+  } finally {
+    isSyncing = false;
+  }
+}
+
+function buildPayload(isFinal) {
+  const paid = WARGA.filter((_, i) => todayData[i] && todayData[i].paid).length;
+  return {
+    date_key: todayKey,
+    date_label: formatDateID(todayKey),
+    total_paid: paid,
+    total_amount: paid * NILAI_PER_WARGA,
+    details: WARGA.map((nama, i) => ({
+      nama,
+      paid: !!(todayData[i] && todayData[i].paid),
+      reason: (todayData[i] && todayData[i].reason) || ''
+    })),
+    is_final: isFinal,
+    saved_at: new Date().toISOString()
+  };
+}
+
+// ═══════════════════════════════════════
+// SYNC STATUS
+// ═══════════════════════════════════════
+function setSyncStatus(status) {
+  const el = document.getElementById('syncStatus');
+  if (!el) return;
+  const map = {
+    syncing: ['⟳ Menyinkron...', 'var(--a600)'],
+    saved:   ['✓ Tersinkron',    'var(--g600)'],
+    error:   ['⚠ Gagal sinkron', 'var(--r600)'],
+    offline: ['○ Mode lokal',    'var(--muted)'],
+  };
+  const [text, color] = map[status] || map.offline;
+  el.textContent = text;
+  el.style.color = color;
+}
+
+// ═══════════════════════════════════════
+// RENDER WARGA
+// ═══════════════════════════════════════
+function renderWargaGrid() {
+  const grid = document.getElementById('wargaGrid');
+  grid.innerHTML = WARGA.map((nama, i) => {
+    const d = todayData[i] || {};
+    const paid = !!d.paid;
+    const reason = d.reason || '';
+    const initials = getInitials(nama);
+    const readonlyClass = isAdmin ? '' : ' readonly';
+    const disabledAttr = isAdmin ? '' : 'disabled';
+    return `
+    <div class="warga-card${paid ? ' paid' : (reason ? ' unpaid-noted' : '')}${readonlyClass}" id="card-${i}">
+      <div class="card-main" onclick="${isAdmin ? `toggleCard(${i})` : ''}">
+        <div class="warga-avatar">${initials}</div>
+        <div class="warga-info">
+          <div class="warga-name">${nama}</div>
+          <div class="warga-status">${paid ? '✓ Sudah bayar — '+formatRupiah(NILAI_PER_WARGA) : (reason ? '✗ Belum — ada keterangan' : 'Belum dikonfirmasi')}</div>
+        </div>
+        <div class="check-wrap">
+          <input type="checkbox" ${paid ? 'checked' : ''} ${disabledAttr}
+            onclick="event.stopPropagation();onCheckChange(${i}, this.checked)">
+        </div>
+      </div>
+      <div class="reason-wrap">
+        <label class="reason-label">Alasan tidak bayar:</label>
+        <textarea class="reason-input" rows="2" ${disabledAttr}
+          placeholder="${isAdmin ? 'Tulis alasan...' : 'Hanya bisa dilihat'}"
+          oninput="onReasonChange(${i}, this.value)">${reason}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateCard(i) {
+  const d = todayData[i] || {};
+  const paid = !!d.paid;
+  const reason = d.reason || '';
+  const card = document.getElementById('card-' + i);
+  if (!card) return;
+  const readonlyClass = isAdmin ? '' : ' readonly';
+  card.className = `warga-card${paid ? ' paid' : (reason ? ' unpaid-noted' : '')}${readonlyClass}`;
+  card.querySelector('.warga-status').textContent =
+    paid ? '✓ Sudah bayar — '+formatRupiah(NILAI_PER_WARGA) :
+    (reason ? '✗ Belum — ada keterangan' : 'Belum dikonfirmasi');
+  renderStats();
+}
+
+// ═══════════════════════════════════════
+// RENDER STATS
+// ═══════════════════════════════════════
+function renderStats() {
+  const paid = WARGA.filter((_, i) => todayData[i] && todayData[i].paid).length;
+  const total = paid * NILAI_PER_WARGA;
+  const pct = Math.round(paid / WARGA.length * 100);
+
+  document.getElementById('statTotal').textContent = formatRupiah(total);
+  document.getElementById('statBayar').textContent = paid + '/' + WARGA.length;
+  document.getElementById('statBelum').textContent = WARGA.length - paid;
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  // Belum section
+  const belumSection = document.getElementById('belumSection');
+  const belumList = document.getElementById('belumList');
+  const belum = WARGA.filter((_, i) => !(todayData[i] && todayData[i].paid));
+  if (belum.length === 0) {
+    belumSection.style.display = 'none';
+  } else {
+    belumSection.style.display = 'block';
+    belumList.innerHTML = belum.map(nama => {
+      const i = WARGA.indexOf(nama);
+      const reason = todayData[i] && todayData[i].reason;
+      return `<div class="belum-item">
+        <div class="belum-dot"></div>
+        <div>
+          <div class="belum-name">${nama}</div>
+          ${reason
+            ? `<div class="belum-alasan">"${reason}"</div>`
+            : `<div class="belum-alasan" style="color:#fca5a5">Alasan belum diisi</div>`}
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ═══════════════════════════════════════
+// INTERACTIONS
+// ═══════════════════════════════════════
+function toggleCard(i) {
+  if (!isAdmin) return;
+  const cb = document.querySelector(`#card-${i} input[type=checkbox]`);
+  cb.checked = !cb.checked;
+  onCheckChange(i, cb.checked);
+}
+
+async function onCheckChange(i, checked) {
+  if (!isAdmin) return;
+  if (!todayData[i]) todayData[i] = {};
+  todayData[i].paid = checked;
+  if (checked) {
+    todayData[i].reason = '';
+    const ta = document.querySelector(`#card-${i} textarea`);
+    if (ta) ta.value = '';
+  }
+  updateCard(i);
+  scheduleAutoSave();
+  // Log aktivitas
+  const msg = checked
+    ? `${WARGA[i]} ditandai sudah bayar`
+    : `${WARGA[i]} diubah ke belum bayar`;
+  await logActivity(checked ? 'pay' : 'unpay', msg);
+}
+
+async function onReasonChange(i, val) {
+  if (!isAdmin) return;
+  if (!todayData[i]) todayData[i] = {};
+  todayData[i].reason = val;
+  updateCard(i);
+  scheduleAutoSave();
+}
+
+// ═══════════════════════════════════════
+// SIMPAN FINAL
+// ═══════════════════════════════════════
+async function simpanData() {
+  if (!isAdmin) { showToast('⚠ Harus mode Admin'); return; }
+  const btn = document.getElementById('btnSimpan');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> Menyimpan...';
+  try {
+    await DB.upsertDaily(buildPayload(true));
+    localStorage.removeItem('jimpitan_draft_' + todayKey);
+    document.getElementById('finalBadge').style.display = 'inline-flex';
+    setSyncStatus('saved');
+    await logActivity('final', 'Data hari ini ditandai selesai (final)');
+    showToast('✓ Data final tersimpan!');
+  } catch (e) {
+    showToast('❌ Gagal: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>💾</span> Tandai Selesai';
+  }
+}
+
+// ═══════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════
+function confirmReset() {
+  if (!isAdmin) return;
+  showConfirm('↺', 'Reset Hari Ini?',
+    'Semua centang akan dikosongkan dan data di database diperbarui.',
+    async () => {
+      todayData = {};
+      document.getElementById('finalBadge').style.display = 'none';
+      scheduleAutoSave();
+      renderWargaGrid();
+      renderStats();
+      await logActivity('reset', 'Data hari ini direset oleh admin');
+      showToast('Data hari ini direset');
+    }
+  );
+}
+
+// ═══════════════════════════════════════
+// RIWAYAT
+// ═══════════════════════════════════════
+async function loadRiwayat() {
+  const el = document.getElementById('riwayatContent');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div>Memuat...</div>';
+  try {
+    const rows = await DB.getAllDaily();
+    if (!rows || rows.length === 0) {
+      el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Belum ada riwayat tersimpan.</p></div>';
+      document.getElementById('akumValue').textContent = 'Rp0';
+      document.getElementById('akumSub').textContent = '0 hari tercatat';
+      document.getElementById('btnHapusSemua').style.display = 'none';
+      return;
+    }
+
+    const totalAkum = rows.reduce((s, r) => s + (r.total_amount || 0), 0);
+    document.getElementById('akumValue').textContent = formatRupiah(totalAkum);
+    document.getElementById('akumSub').textContent = rows.length + ' hari tercatat';
+    document.getElementById('btnHapusSemua').style.display = isAdmin ? 'block' : 'none';
+
+    el.innerHTML = '<div class="riwayat-list">' + rows.map((r, idx) => {
+      const details = Array.isArray(r.details) ? r.details : [];
+      const belum = details.filter(d => !d.paid);
+      const badgeHtml = r.is_final
+        ? '<span class="badge badge-final">Final</span>'
+        : '<span class="badge badge-draft">Draft</span>';
+      const editBtn = isAdmin
+        ? `<button class="icon-btn" title="Edit" onclick="event.stopPropagation();editRiwayat('${r.date_key}')">✏️</button>`
+        : '';
+      const delBtn = isAdmin
+        ? `<button class="icon-btn red" title="Hapus" onclick="event.stopPropagation();hapusHari('${r.date_key}','${r.date_label||r.date_key}')">🗑</button>`
+        : '';
+      return `
+      <div class="riwayat-card" id="rw-${idx}">
+        <div class="riwayat-header" onclick="toggleRiwayat(${idx})">
+          <div style="flex:1;min-width:0">
+            <div class="riwayat-date">📅 ${r.date_label||r.date_key} ${badgeHtml}</div>
+            <div class="riwayat-meta">${r.total_paid}/${WARGA.length} bayar · ${belum.length} belum · ${formatRupiah(r.total_amount||0)}</div>
+          </div>
+          <div class="riwayat-right">
+            ${editBtn}${delBtn}
+            <div class="riwayat-chevron">▼</div>
+          </div>
+        </div>
+        <div class="riwayat-body">
+          ${details.map(d => `
+          <div class="riwayat-row">
+            <div>
+              <div class="riwayat-row-name">${d.nama}</div>
+              ${!d.paid && d.reason ? `<div class="riwayat-alasan">"${d.reason}"</div>` : ''}
+            </div>
+            <span class="riwayat-row-status ${d.paid ? 'status-paid' : 'status-unpaid'}">${d.paid ? 'Sudah' : 'Belum'}</span>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }).join('') + '</div>';
+
+  } catch (e) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><p>Gagal: ${e.message}</p></div>`;
+  }
+}
+
+function toggleRiwayat(idx) {
+  document.getElementById('rw-' + idx).classList.toggle('open');
+}
+
+async function editRiwayat(dateKey) {
+  if (!isAdmin) { showToast('⚠ Harus mode Admin'); return; }
+  showToast('⏳ Memuat data...');
+  try {
+    const rows = await DB.getDailyRecord(dateKey);
+    if (!rows || !rows.length) { showToast('❌ Data tidak ditemukan'); return; }
+    const row = rows[0];
+    todayKey = dateKey;
+    todayData = {};
+    (row.details || []).forEach((d, i) => { todayData[i] = { paid: d.paid, reason: d.reason || '' }; });
+    document.getElementById('pageTitle').textContent = 'Edit: ' + (row.date_label || dateKey);
+    document.getElementById('pageSubtitle').textContent = 'Mode edit riwayat · klik Tandai Selesai untuk simpan';
+    if (row.is_final) document.getElementById('finalBadge').style.display = 'inline-flex';
+    renderWargaGrid();
+    renderStats();
+    switchTab('hari-ini', document.querySelectorAll('.tab-btn')[0]);
+    window.scrollTo(0, 0);
+    showToast('✏️ Edit mode: ' + (row.date_label || dateKey));
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+async function hapusHari(dateKey, label) {
+  if (!isAdmin) return;
+  showConfirm('🗑', 'Hapus Data Ini?',
+    `Data "${label}" akan dihapus permanen.`,
+    async () => {
+      try {
+        await DB.deleteDaily(dateKey);
+        localStorage.removeItem('jimpitan_draft_' + dateKey);
+        showToast('✓ Data dihapus');
+        loadRiwayat();
+      } catch (e) { showToast('❌ ' + e.message); }
+    }
+  );
+}
+
+async function hapusSemua() {
+  if (!isAdmin) return;
+  showConfirm('⚠️', 'Hapus Semua Riwayat?',
+    'Seluruh data dari semua hari akan dihapus permanen. Tidak bisa dibatalkan.',
+    async () => {
+      try {
+        await DB.deleteAllDaily();
+        Object.keys(localStorage)
+          .filter(k => k.startsWith('jimpitan_draft_'))
+          .forEach(k => localStorage.removeItem(k));
+        showToast('✓ Semua riwayat dihapus');
+        loadRiwayat();
+      } catch (e) { showToast('❌ ' + e.message); }
+    }
+  );
+}
+
+// ═══════════════════════════════════════
+// LOG TAB
+// ═══════════════════════════════════════
+async function loadLog() {
+  try {
+    // Kunjungan hari ini
+    const visitRows = await DB.getVisit(todayKey);
+    const visits = visitRows && visitRows.length ? visitRows[0].count : 0;
+    document.getElementById('logVisits').textContent = visits;
+    document.getElementById('footerVisits').textContent = visits;
+
+    // Admin logs hari ini
+    const adminRows = await DB.getAdminLogs(todayKey);
+    const adminCount = adminRows ? adminRows.length : 0;
+    const lastAdmin = adminRows && adminRows.length ? adminRows[0].accessed_at : null;
+    document.getElementById('logAdminAccess').textContent = adminCount;
+    document.getElementById('logLastAdmin').textContent = lastAdmin ? formatTimeID(lastAdmin) : '–';
+    document.getElementById('footerLastAdmin').textContent = lastAdmin ? formatDateTimeShort(lastAdmin) : '–';
+
+    // Admin log list (semua)
+    const allAdminLogs = await DB.getAdminLogsAll();
+    const adminLogList = document.getElementById('adminLogList');
+    if (!allAdminLogs || allAdminLogs.length === 0) {
+      adminLogList.innerHTML = '<div class="activity-empty">Belum ada log admin</div>';
+    } else {
+      adminLogList.innerHTML = allAdminLogs.slice(0, 10).map(l => `
+        <div class="activity-item">
+          <div class="activity-dot dot-admin"></div>
+          <div class="activity-text">Admin masuk sistem</div>
+          <div class="activity-time">${formatDateTimeShort(l.accessed_at)}</div>
+        </div>`).join('');
+    }
+
+    // Activity logs
+    const actRows = await DB.getActivities();
+    const actList = document.getElementById('activityList');
+    if (!actRows || actRows.length === 0) {
+      actList.innerHTML = '<div class="activity-empty">Belum ada aktivitas</div>';
+    } else {
+      const dotClass = { pay:'dot-pay', unpay:'dot-unpay', admin:'dot-admin', reset:'dot-reset', final:'dot-pay' };
+      actList.innerHTML = actRows.map(a => `
+        <div class="activity-item">
+          <div class="activity-dot ${dotClass[a.type] || 'dot-reset'}"></div>
+          <div class="activity-text">${a.message}</div>
+          <div class="activity-time">${formatDateTimeShort(a.created_at)}</div>
+        </div>`).join('');
+    }
+  } catch (e) {
+    console.warn('loadLog error:', e.message);
+  }
+}
+
+// ═══════════════════════════════════════
+// NAV / TAB
+// ═══════════════════════════════════════
+function switchTab(tab, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + tab).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (tab === 'riwayat') loadRiwayat();
+  if (tab === 'log') loadLog();
+}
+
+// ═══════════════════════════════════════
+// CONFIRM MODAL
+// ═══════════════════════════════════════
+function showConfirm(icon, title, msg, onOk) {
+  document.getElementById('confirmIcon').textContent = icon;
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMsg').textContent = msg;
+  document.getElementById('confirmOk').onclick = () => { closeConfirm(); onOk(); };
+  document.getElementById('confirmOverlay').style.display = 'flex';
+}
+function closeConfirm() {
+  document.getElementById('confirmOverlay').style.display = 'none';
+}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+async function boot() {
+  todayKey = getTodayKey();
+  const label = formatDateID(todayKey);
+
+  document.getElementById('navTitle').textContent = CFG.dusun || 'Jimpitan Dusun';
+  document.getElementById('navSub').textContent = label;
+  document.getElementById('pageTitle').textContent = 'Jimpitan ' + label.split(',')[0] + ', ' + label.split(', ')[1];
+  document.getElementById('pageSubtitle').textContent = todayKey + ' · Rp' + NILAI_PER_WARGA.toLocaleString('id-ID') + '/warga';
+
+  // Cek session admin
+  if (checkAdminSession()) {
+    isAdmin = true;
+  }
+  updateModeUI();
+
+  // Load data lokal dulu
+  todayData = loadDraftLocal(todayKey);
+
+  // Sinkron dari DB
+  setSyncStatus('syncing');
+  try {
+    const rows = await DB.getDailyRecord(todayKey);
+    if (rows && rows.length) {
+      const row = rows[0];
+      todayData = {};
+      (row.details || []).forEach((d, i) => {
+        todayData[i] = { paid: d.paid, reason: d.reason || '' };
+      });
+      saveDraftLocal();
+      if (row.is_final) {
+        document.getElementById('finalBadge').style.display = 'inline-flex';
+      }
+    }
+    setSyncStatus('saved');
+
+    // Increment kunjungan
+    const count = await incrementVisit();
+    document.getElementById('footerVisits').textContent = count || '–';
+
+  } catch (e) {
+    setSyncStatus('error');
+    console.warn('Boot DB error:', e.message);
+    showToast('⚠ Offline — data lokal');
+  }
+
+  renderWargaGrid();
+  renderStats();
+}
+
+// ═══════════════════════════════════════
+// ENTRY POINT
+// ═══════════════════════════════════════
+window.addEventListener('load', () => {
+  loadConfig();
+  if (!CFG.url || !CFG.key) {
+    document.getElementById('setupOverlay').style.display = 'flex';
+  } else {
+    boot();
+  }
+});
+</script>
+</body>
+</html>
