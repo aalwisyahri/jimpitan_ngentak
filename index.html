@@ -646,13 +646,13 @@ const DB = {
   //     headers:{'Prefer':'return=representation,resolution=merge-duplicates'},
   //     body: JSON.stringify(data)
   //   }),
- upsertDaily: (data) =>
-  sb('daily_records', {
+upsertDaily: (data) =>
+  sb('daily_records?on_conflict=date_key', {  // ✅ FIX
     method: 'POST',
     headers: {
       'Prefer': 'resolution=merge-duplicates'
     },
-    body: JSON.stringify([data]) // 🔥 WAJIB ARRAY
+    body: JSON.stringify(data)
   }),
 
   deleteDaily: (dateKey) =>
