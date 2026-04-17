@@ -536,12 +536,26 @@ let isSyncing = false;
 // function loadConfig() {
 //   CFG = JSON.parse(localStorage.getItem('jimpitan_cfg') || '{}');
 // }
+// function loadConfig() {
+//   const saved = JSON.parse(localStorage.getItem('jimpitan_cfg') || '{}');
+
+//   CFG = {
+//     url: saved.url || "https://vbmgwrjgmlbryipgcrzt.supabase.co",
+    // key: saved.key || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+//     dusun: saved.dusun || "Saka Taruna",
+//     pin: saved.pin || "1234"
+//   };
+// }
+
 function loadConfig() {
   const saved = JSON.parse(localStorage.getItem('jimpitan_cfg') || '{}');
 
+  const DEFAULT_URL = "https://vbmgwrjgmlbryipgcrzt.supabase.co";
+  const DEFAULT_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZibWd3cmpnbWxicnlpcGdjcnp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MTQ2MjgsImV4cCI6MjA5MTk5MDYyOH0.KW7C6vfIVxng_D_HVYEMk0J-bsch7gJge4V_c0HV9d0";
+
   CFG = {
-    url: saved.url || "https://vbmgwrjgmlbryipgcrzt.supabase.co",
-    key: saved.key || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    url: (saved.url && saved.url.includes('supabase.co')) ? saved.url : DEFAULT_URL,
+    key: (saved.key && saved.key.length > 50) ? saved.key : DEFAULT_KEY,
     dusun: saved.dusun || "Saka Taruna",
     pin: saved.pin || "1234"
   };
