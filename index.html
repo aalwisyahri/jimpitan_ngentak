@@ -822,13 +822,37 @@ function updateModeUI() {
 // ═══════════════════════════════════════
 // LOGGING
 // ═══════════════════════════════════════
+// async function incrementVisit() {
+//   try {
+//     const rows = await DB.getVisit(todayKey);
+//     const current = (rows && rows.length) ? rows[0] : null;
+//     const count = current ? current.count + 1 : 1;
+//     await DB.upsertVisit({ date_key: todayKey, count });
+//     return count;
+//   } catch (e) {
+//     console.warn('Visit log gagal:', e.message);
+//     return null;
+//   }
+// }
+
 async function incrementVisit() {
   try {
-    const rows = await DB.getVisit(todayKey);
-    const current = (rows && rows.length) ? rows[0] : null;
-    const count = current ? current.count + 1 : 1;
-    await DB.upsertVisit({ date_key: todayKey, count });
-    return count;
+    const res = await fetch(CFG.url + '/rest/v1/rpc/increment_visit', {
+      method: 'POST',
+      headers: {
+        'apikey': CFG.key,
+        'Authorization': 'Bearer ' + CFG.key,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ p_date: todayKey })
+    });
+
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+
+    const data = await res.json();
+    return data; // count terbaru
   } catch (e) {
     console.warn('Visit log gagal:', e.message);
     return null;
@@ -1361,12 +1385,23 @@ async function boot() {
 // ═══════════════════════════════════════
 // ENTRY POINT
 // ═══════════════════════════════════════
-window.addEventListener('load', () => {
+// window.addEventListener('load', () => {
+//   loadConfig();
+//   if (!CFG.url || !CFG.key) {
+//     document.getElementById('setupOverlay').style.display = 'flex';
+//   } else {
+//     boot();
+//   }
+// });
+
+window.addEventListener('load', async () => {
   loadConfig();
+
   if (!CFG.url || !CFG.key) {
     document.getElementById('setupOverlay').style.display = 'flex';
   } else {
-    boot();
+    await boot();
+    await incrementVisit(); // 🔥 TAMBAHKAN INI
   }
 });
 </script>
