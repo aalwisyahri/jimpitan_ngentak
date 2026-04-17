@@ -24,7 +24,22 @@ body{font-family:var(--font);background:var(--bg);color:var(--s900);min-height:1
 nav{background:var(--surface);border-bottom:1px solid var(--s200);position:sticky;top:0;z-index:100;padding:0 16px}
 .nav-inner{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
 .nav-brand{display:flex;align-items:center;gap:10px}
-.nav-logo{width:32px;height:32px;background:var(--g600);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+/* .nav-logo{width:32px;height:32px;background:var(--g600);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+  */
+.nav-logo {
+  width:36px;
+  height:36px;
+  background: transparent; /* ⬅️ ini kuncinya */
+  border-radius:0;         /* optional: hilangin rounded */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+  .nav-logo img {
+  width:36px;
+  height:36px;
+  object-fit:contain; /* biar ga kepotong */
+}
 .nav-title{font-size:15px;font-weight:700;color:var(--s800);line-height:1.2}
 .nav-sub{font-size:12px;font-weight:400;color:var(--muted)}
 .nav-right{display:flex;align-items:center;gap:8px}
@@ -319,9 +334,12 @@ nav{background:var(--surface);border-bottom:1px solid var(--s200);position:stick
 <nav>
   <div class="nav-inner">
     <div class="nav-brand">
-      <div class="nav-logo">🌾</div>
+      <!-- <div class="nav-logo">🌾</div> -->
+       <div class="nav-logo">
+      <img src="saktar.jpeg" alt="logo" style="width:20px;height:20px;">
+      </div>
       <div>
-        <div class="nav-title" id="navTitle">Jimpitan Dusun</div>
+        <div class="nav-title" id="navTitle">Jimpitan Dusun Ngentak</div>
         <div class="nav-sub" id="navSub">Loading...</div>
       </div>
     </div>
@@ -490,14 +508,15 @@ nav{background:var(--surface);border-bottom:1px solid var(--s200);position:stick
 // KONSTANTA
 // ═══════════════════════════════════════
 const WARGA = [
-  "Pak Slamet","Bu Slamet","Pak Haryono","Bu Haryono",
-  "Pak Sugeng","Bu Sugeng","Pak Bambang","Bu Bambang",
-  "Pak Wahyu","Bu Wahyu","Pak Agus","Bu Agus",
-  "Pak Eko","Bu Eko","Pak Tri","Bu Tri",
-  "Pak Joko","Bu Joko","Pak Rudi","Bu Rudi",
-  "Pak Darmanto","Bu Darmanto","Pak Sutrisno","Bu Sutrisno",
-  "Pak Widodo","Bu Widodo","Pak Hendro","Bu Hendro"
+  "Pak Kirno","Kang Joyo","Mas Tono","Pak Joko",
+  "Mbak Sih","Mbah Hasan","Pak Kadus","Lik Yatno",
+  "Pak RW","Mbah Maridi","Mas Arif","Mbah Min",
+  "Om Min","Mak Iyem","Mbah Pelog","Mbah Semo",
+  "Mbah Mitro","Mbah Paidi","Bang Mandur","Pak SG",
+  "Mbah Padi","Mas Pur","Pak Karim an","Mbah RT",
+  "Mbah Yusuf", "Mas Pur Mbak Darni","Mas Gejen","Mbah Timin"
 ];
+
 const NILAI_PER_WARGA = 1000;
 const MAX_ACTIVITY = 10;
 
@@ -533,9 +552,9 @@ function saveConfig() {
 }
 
 function showSetup() {
-  document.getElementById('cfgUrl').value = CFG.url || '';
-  document.getElementById('cfgKey').value = CFG.key || '';
-  document.getElementById('cfgDusun').value = CFG.dusun || '';
+  document.getElementById('cfgUrl').value = CFG.url || 'https://vbmgwrjgmlbryipgcrzt.supabase.co';
+  document.getElementById('cfgKey').value = CFG.key || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZibWd3cmpnbWxicnlpcGdjcnp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MTQ2MjgsImV4cCI6MjA5MTk5MDYyOH0.KW7C6vfIVxng_D_HVYEMk0J-bsch7gJge4V_c0HV9d0';
+  document.getElementById('cfgDusun').value = CFG.dusun || 'Saka Taruna';
   document.getElementById('cfgPin').value = '';
   document.getElementById('setupOverlay').style.display = 'flex';
 }
