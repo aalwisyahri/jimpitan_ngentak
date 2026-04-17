@@ -533,8 +533,18 @@ let isSyncing = false;
 // ═══════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════
+// function loadConfig() {
+//   CFG = JSON.parse(localStorage.getItem('jimpitan_cfg') || '{}');
+// }
 function loadConfig() {
-  CFG = JSON.parse(localStorage.getItem('jimpitan_cfg') || '{}');
+  const saved = JSON.parse(localStorage.getItem('jimpitan_cfg') || '{}');
+
+  CFG = {
+    url: saved.url || "https://vbmgwrjgmlbryipgcrzt.supabase.co",
+    key: saved.key || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    dusun: saved.dusun || "Saka Taruna",
+    pin: saved.pin || "1234"
+  };
 }
 
 function saveConfig() {
