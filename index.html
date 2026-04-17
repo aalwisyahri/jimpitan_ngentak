@@ -639,13 +639,21 @@ const DB = {
   getDailyRecord: (dateKey) =>
     sb(`daily_records?date_key=eq.${dateKey}&select=*`, { method:'GET', prefer:'' }),
 
+  // upsertDaily: (data) =>
+  //   sb('daily_records', {
+  //     method:'POST',
+  //     prefer:'return=representation,resolution=merge-duplicates',
+  //     headers:{'Prefer':'return=representation,resolution=merge-duplicates'},
+  //     body: JSON.stringify(data)
+  //   }),
   upsertDaily: (data) =>
-    sb('daily_records', {
-      method:'POST',
-      prefer:'return=representation,resolution=merge-duplicates',
-      headers:{'Prefer':'return=representation,resolution=merge-duplicates'},
-      body: JSON.stringify(data)
-    }),
+  sb('daily_records', {
+    method: 'POST',
+    headers: {
+      'Prefer': 'resolution=merge-duplicates'
+    },
+    body: JSON.stringify(data)
+  }),
 
   deleteDaily: (dateKey) =>
     sb(`daily_records?date_key=eq.${dateKey}`, { method:'DELETE', prefer:'' }),
